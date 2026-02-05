@@ -36,8 +36,8 @@ namespace BrowserSelector.Pages
             {
                 var rules = UrlRuleManager.LoadRules();
                 var groups = UrlGroupManager.LoadGroups();
-                IndividualRulesCount.Text = $" ({rules.Count})";
-                UrlGroupsCount.Text = $" ({groups.Count})";
+                IndividualRulesTab.Header = $"Individual Rules ({rules.Count})";
+                UrlGroupsTab.Header = $"URL Groups ({groups.Count})";
             }
             catch { }
         }
@@ -109,23 +109,14 @@ namespace BrowserSelector.Pages
 
         #region Add Actions
 
-        private void AddDropdown_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void AddRule_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is ComboBox comboBox && comboBox.SelectedItem is ComboBoxItem selectedItem)
-            {
-                var tag = selectedItem.Tag as string;
-                if (tag == "Rule")
-                {
-                    AddUrlRule_Click();
-                }
-                else if (tag == "Group")
-                {
-                    AddUrlGroup_Click();
-                }
+            AddUrlRule_Click();
+        }
 
-                // Reset selection
-                comboBox.SelectedIndex = -1;
-            }
+        private void AddGroup_Click(object sender, RoutedEventArgs e)
+        {
+            AddUrlGroup_Click();
         }
 
         private void AddUrlRule_Click()
@@ -226,17 +217,31 @@ namespace BrowserSelector.Pages
                     rule.IsEnabled = toggle.IsChecked ?? true;
                     UrlRuleManager.SaveRules(rules);
                     Logger.Log($"Rule '{rule.Pattern}' enabled: {rule.IsEnabled}");
+
+                    // Refresh DataGrid to update row opacity
+                    RulesDataGrid.Items.Refresh();
                 }
             }
         }
 
-        private void ClearAllRules_Click(object sender, RoutedEventArgs e)
+        private void ClearIndividualRules_Click(object sender, RoutedEventArgs e)
         {
-            if (ConfirmationDialog.Show(Window.GetWindow(this), "Clear All Rules",
-                "Are you sure you want to delete ALL rules? This cannot be undone.", "Delete All", "Cancel"))
+            if (ConfirmationDialog.Show(Window.GetWindow(this), "Clear Individual Rules",
+                "Are you sure you want to delete all individual rules? This cannot be undone.", "Delete All", "Cancel"))
             {
                 UrlRuleManager.SaveRules(new List<UrlRule>());
                 LoadRules();
+                NotifyDataChanged();
+            }
+        }
+
+        private void ClearUrlGroups_Click(object sender, RoutedEventArgs e)
+        {
+            if (ConfirmationDialog.Show(Window.GetWindow(this), "Clear URL Groups",
+                "Are you sure you want to delete all URL groups? This cannot be undone.", "Delete All", "Cancel"))
+            {
+                UrlGroupManager.SaveGroups(new List<UrlGroup>());
+                LoadUrlGroups();
                 NotifyDataChanged();
             }
         }
@@ -355,6 +360,9 @@ namespace BrowserSelector.Pages
                     group.IsEnabled = toggle.IsChecked ?? false;
                     UrlGroupManager.UpdateGroup(group);
                     Logger.Log($"URL Group '{group.Name}' enabled: {group.IsEnabled}");
+
+                    // Refresh to update visual state
+                    LoadUrlGroups();
                 }
             }
         }
@@ -387,6 +395,37 @@ namespace BrowserSelector.Pages
                     Logger.Log($"MovePatternToIndividualRule_Click ERROR: {ex.Message}");
                     MessageBox.Show($"Error creating individual rule: {ex.Message}", "Error",
                         MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        #endregion
+
+        #region Scroll Handling
+
+        /// <summary>
+        /// Bubbles scroll events from DataGrid to parent ScrollViewer
+        /// </summary>
+        private void DataGrid_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (sender is DataGrid dataGrid && !e.Handled)
+            {
+                // Bubble the event to the parent ScrollViewer
+                e.Handled = true;
+                var eventArg = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta)
+                {
+                    RoutedEvent = MouseWheelEvent,
+                    Source = sender
+                };
+                var parent = dataGrid.Parent as UIElement;
+                while (parent != null)
+                {
+                    if (parent is ScrollViewer)
+                    {
+                        parent.RaiseEvent(eventArg);
+                        break;
+                    }
+                    parent = System.Windows.Media.VisualTreeHelper.GetParent(parent) as UIElement;
                 }
             }
         }
