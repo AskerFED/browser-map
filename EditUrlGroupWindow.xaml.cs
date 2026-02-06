@@ -16,7 +16,9 @@ namespace BrowserSelector
     {
         private UrlGroup _group;
         private bool _isEditMode;
+        private bool _isBuiltIn;
         private ObservableCollection<string> _patterns;
+        private List<string> _originalBuiltInPatterns = new List<string>();
 
         public EditUrlGroupWindow() : this(null)
         {
@@ -40,7 +42,22 @@ namespace BrowserSelector
 
             _isEditMode = existingGroup != null;
             _group = existingGroup ?? new UrlGroup();
+            _isBuiltIn = _group.IsBuiltIn;
             _patterns = new ObservableCollection<string>(_group.UrlPatterns ?? new List<string>());
+
+            // Store original patterns for built-in groups to enable restore
+            if (_isBuiltIn)
+            {
+                var builtInDefinition = UrlGroupManager.GetBuiltInGroups()
+                    .FirstOrDefault(g => g.Id == _group.Id);
+                if (builtInDefinition != null)
+                {
+                    _originalBuiltInPatterns = new List<string>(builtInDefinition.UrlPatterns);
+                }
+            }
+
+            // Configure UI based on IsBuiltIn
+            ConfigureBuiltInMode();
 
             if (_isEditMode)
             {
@@ -57,6 +74,33 @@ namespace BrowserSelector
             }
 
             RefreshPatternsList();
+        }
+
+        private void ConfigureBuiltInMode()
+        {
+            // Show/hide Restore button based on IsBuiltIn
+            RestoreButton.Visibility = _isBuiltIn ? Visibility.Visible : Visibility.Collapsed;
+
+            // Update restore button state
+            UpdateRestoreButtonState();
+        }
+
+        private void UpdateRestoreButtonState()
+        {
+            if (!_isBuiltIn)
+            {
+                RestoreButton.IsEnabled = false;
+                return;
+            }
+
+            // Calculate which patterns are deleted (exist in original but not in current)
+            var deletedCount = _originalBuiltInPatterns
+                .Count(p => !_patterns.Contains(p));
+
+            RestoreButton.IsEnabled = deletedCount > 0;
+            RestoreButton.Content = deletedCount > 0
+                ? $"Restore ({deletedCount})"
+                : "Restore All";
         }
 
         private void LoadExistingProfiles()
@@ -76,8 +120,13 @@ namespace BrowserSelector
         private void RefreshPatternsList()
         {
             PatternsItemsControl.ItemsSource = null;
-            PatternsItemsControl.ItemsSource = _patterns;
-            PatternCountText.Text = $"{_patterns.Count} pattern{(_patterns.Count != 1 ? "s" : "")}";
+            PatternsItemsControl.ItemsSource = _patterns.ToList();
+
+            var count = _patterns.Count;
+            PatternCountText.Text = $"{count} pattern{(count != 1 ? "s" : "")}";
+            PatternCountBadge.Text = count.ToString();
+
+            UpdateRestoreButtonState();
         }
 
         private void NewPatternTextBox_KeyDown(object sender, KeyEventArgs e)
@@ -130,6 +179,56 @@ namespace BrowserSelector
             {
                 _patterns.Remove(pattern);
                 RefreshPatternsList();
+            }
+        }
+
+        private void RestorePatterns_Click(object sender, RoutedEventArgs e)
+        {
+            // Calculate which patterns are deleted
+            var deletedPatterns = _originalBuiltInPatterns
+                .Where(p => !_patterns.Contains(p))
+                .ToList();
+
+            if (deletedPatterns.Count == 0) return;
+
+            foreach (var pattern in deletedPatterns)
+            {
+                if (!_patterns.Contains(pattern))
+                {
+                    _patterns.Add(pattern);
+                }
+            }
+
+            RefreshPatternsList();
+        }
+
+        private void MovePatternToRule_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.Tag is string pattern)
+            {
+                try
+                {
+                    // Open AddRuleWindow with the pattern pre-filled
+                    var addWindow = new AddRuleWindow(pattern);
+                    addWindow.Owner = this;
+
+                    if (addWindow.ShowDialog() == true)
+                    {
+                        // Remove pattern from current group
+                        _patterns.Remove(pattern);
+                        RefreshPatternsList();
+
+                        // Show confirmation
+                        MessageBox.Show($"Pattern '{pattern}' has been moved to an individual rule.",
+                            "Pattern Moved", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log($"MovePatternToRule_Click ERROR: {ex.Message}");
+                    MessageBox.Show($"Error moving pattern: {ex.Message}", "Error",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 

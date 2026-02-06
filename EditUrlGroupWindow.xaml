@@ -2,172 +2,256 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:BrowserSelector.Controls"
-        Title="Edit URL Group" Height="570" Width="550"
+        Title="Edit URL Group" Height="650" Width="620"
+        MinHeight="450" MinWidth="500"
         WindowStartupLocation="CenterOwner"
         Background="#F3F3F3"
-        ResizeMode="NoResize">
+        ResizeMode="CanResize">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/LinkRouter;component/Themes/Windows11Theme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+
+            <!-- Icon Geometries -->
+            <Geometry x:Key="ExportIcon">M4,2 L12,2 L12,10 M12,2 L4,10</Geometry>
+
+            <!-- Icon Button Orange Style -->
+            <Style x:Key="IconButtonOrangeStyle" TargetType="Button">
+                <Setter Property="Width" Value="24"/>
+                <Setter Property="Height" Value="24"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Foreground" Value="#666"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Cursor" Value="Hand"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="Border" Background="{TemplateBinding Background}" CornerRadius="3">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Border" Property="Background" Value="#FFF3E0"/>
+                                    <Setter Property="Foreground" Value="#E65100"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- Delete Button Style with Disabled State -->
+            <Style x:Key="DeletePatternButtonStyle" TargetType="Button">
+                <Setter Property="Width" Value="24"/>
+                <Setter Property="Height" Value="24"/>
+                <Setter Property="Background" Value="#FDE7E9"/>
+                <Setter Property="Foreground" Value="#C42B1C"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Cursor" Value="Hand"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="FontSize" Value="11"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="Border" Background="{TemplateBinding Background}" CornerRadius="4">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Border" Property="Background" Value="#F5C2C7"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="Border" Property="Background" Value="#F0F0F0"/>
+                                    <Setter Property="Foreground" Value="#BBBBBB"/>
+                                    <Setter Property="Cursor" Value="Arrow"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
         </ResourceDictionary>
     </Window.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>      <!-- Scrollable content -->
+            <RowDefinition Height="Auto"/>   <!-- Group Name + Description -->
+            <RowDefinition Height="*"/>       <!-- TabControl -->
             <RowDefinition Height="Auto"/>   <!-- Fixed buttons -->
         </Grid.RowDefinitions>
 
-        <!-- Scrollable Content -->
-        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" Padding="24,20,24,0">
-            <StackPanel>
-                <!-- Group Name -->
-                <StackPanel Margin="0,0,0,16">
-                    <TextBlock Text="Group Name"
-                               Style="{StaticResource BodyStrongTextStyle}"
-                               Margin="0,0,0,8"/>
-                    <TextBox x:Name="GroupNameTextBox"
-                             Style="{StaticResource TextBoxStyle}"
-                             Height="36"/>
-                </StackPanel>
+        <!-- Header Section: Group Name + Description (outside tabs) -->
+        <StackPanel Grid.Row="0" Margin="24,20,24,0">
+            <!-- Group Name -->
+            <StackPanel Margin="0,0,0,16">
+                <TextBlock Text="Group Name"
+                           Style="{StaticResource BodyStrongTextStyle}"
+                           Margin="0,0,0,8"/>
+                <TextBox x:Name="GroupNameTextBox"
+                         Style="{StaticResource TextBoxStyle}"
+                         Height="36"/>
+            </StackPanel>
 
-                <!-- Description -->
-                <StackPanel Margin="0,0,0,16">
-                    <TextBlock Text="Description (optional)"
-                               Style="{StaticResource BodyStrongTextStyle}"
-                               Margin="0,0,0,8"/>
-                    <TextBox x:Name="DescriptionTextBox"
-                             Style="{StaticResource TextBoxStyle}"
-                             Height="72"
-                             TextWrapping="Wrap"
-                             AcceptsReturn="True"
-                             VerticalContentAlignment="Top"/>
-                </StackPanel>
+            <!-- Description -->
+            <StackPanel Margin="0,0,0,8">
+                <TextBlock Text="Description (optional)"
+                           Style="{StaticResource BodyStrongTextStyle}"
+                           Margin="0,0,0,8"/>
+                <TextBox x:Name="DescriptionTextBox"
+                         Style="{StaticResource TextBoxStyle}"
+                         Height="60"
+                         TextWrapping="Wrap"
+                         AcceptsReturn="True"
+                         VerticalContentAlignment="Top"/>
+            </StackPanel>
+        </StackPanel>
 
-                <!-- URL Patterns Section -->
-                <Border Background="#FAFAFA"
-                        BorderBrush="#E4E4E4"
-                        BorderThickness="1"
-                        CornerRadius="4"
-                        Padding="16"
-                        Margin="0,0,0,16">
-                    <StackPanel>
-                        <TextBlock Text="URL Patterns"
-                                   Style="{StaticResource SubtitleTextStyle}"
-                                   Margin="0,0,0,4"/>
-                        <TextBlock Text="Add domain patterns that will match this group"
-                                   Style="{StaticResource CaptionTextStyle}"
-                                   Margin="0,0,0,12"/>
+        <!-- TabControl -->
+        <TabControl Grid.Row="1"
+                    Style="{StaticResource TabControlStyle}"
+                    Margin="24,8,24,16">
 
-                        <!-- Add Pattern Input -->
-                        <Grid Margin="0,0,0,12">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBox x:Name="NewPatternTextBox"
-                                     Grid.Column="0"
-                                     Style="{StaticResource TextBoxStyle}"
-                                     Height="36"
-                                     Margin="0,0,12,0"
-                                     KeyDown="NewPatternTextBox_KeyDown"/>
-                            <Button Grid.Column="1"
-                                    Content="+ Add"
-                                    Click="AddPattern_Click"
-                                    Style="{StaticResource PrimaryButtonStyle}"
-                                    Width="80"/>
-                        </Grid>
-
-                        <!-- Patterns List -->
-                        <Border Background="#FFFFFF"
-                                BorderBrush="#E4E4E4"
-                                BorderThickness="1"
-                                CornerRadius="4"
-                                MaxHeight="120">
-                            <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="8">
-                                <ItemsControl x:Name="PatternsItemsControl">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border Background="#F6F6F6"
-                                                    CornerRadius="4"
-                                                    Padding="12,8"
-                                                    Margin="0,0,0,4"
-                                                    BorderBrush="#E4E4E4"
-                                                    BorderThickness="1">
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                    </Grid.ColumnDefinitions>
-                                                    <TextBlock Grid.Column="0"
-                                                               Text="{Binding}"
-                                                               Style="{StaticResource BodyTextStyle}"
-                                                               VerticalAlignment="Center"/>
-                                                    <Button Grid.Column="1"
-                                                            Content="X"
-                                                            Tag="{Binding}"
-                                                            Click="RemovePattern_Click"
-                                                            Width="24"
-                                                            Height="24"
-                                                            Background="#FDE7E9"
-                                                            Foreground="#C42B1C"
-                                                            BorderThickness="0"
-                                                            Cursor="Hand"
-                                                            FontWeight="Bold"
-                                                            FontSize="11">
-                                                        <Button.Template>
-                                                            <ControlTemplate TargetType="Button">
-                                                                <Border x:Name="Border"
-                                                                        Background="{TemplateBinding Background}"
-                                                                        CornerRadius="4">
-                                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                                </Border>
-                                                                <ControlTemplate.Triggers>
-                                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                                        <Setter TargetName="Border" Property="Background" Value="#F5C2C7"/>
-                                                                    </Trigger>
-                                                                </ControlTemplate.Triggers>
-                                                            </ControlTemplate>
-                                                        </Button.Template>
-                                                    </Button>
-                                                </Grid>
-                                            </Border>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </ScrollViewer>
+            <!-- Tab 1: URL Patterns -->
+            <TabItem Style="{StaticResource TabItemStyle}">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="URL Patterns" Margin="0,0,6,0"/>
+                        <Border Background="{StaticResource AccentBrush}"
+                                CornerRadius="10"
+                                Padding="6,2"
+                                MinWidth="20"
+                                HorizontalAlignment="Center">
+                            <TextBlock x:Name="PatternCountBadge"
+                                       Text="0"
+                                       FontSize="12"
+                                       Foreground="White"
+                                       HorizontalAlignment="Center"
+                                       TextAlignment="Center"/>
                         </Border>
-                        <TextBlock x:Name="PatternCountText"
-                                   Text="0 patterns"
-                                   Style="{StaticResource CaptionTextStyle}"
-                                   Margin="0,8,0,0"/>
                     </StackPanel>
-                </Border>
+                </TabItem.Header>
 
-                <!-- Browser/Profile Selection (reusable component) -->
-                <Border Background="#FAFAFA"
-                        BorderBrush="#E4E4E4"
-                        BorderThickness="1"
-                        CornerRadius="4"
-                        Padding="16"
-                        Margin="0,0,0,10">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="0,8,0,0">
+                    <TextBlock Text="Add domain patterns that will match this group"
+                               Style="{StaticResource CaptionTextStyle}"
+                               Margin="0,0,0,12"/>
+
+                    <!-- Action Bar: Restore + TextBox + Add -->
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Restore button (only visible for built-in groups) -->
+                        <Button x:Name="RestoreButton"
+                                Grid.Column="0"
+                                Content="Restore All"
+                                Click="RestorePatterns_Click"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                Visibility="Collapsed"
+                                Margin="0,0,12,0"/>
+
+                        <!-- Pattern input -->
+                        <TextBox x:Name="NewPatternTextBox"
+                                 Grid.Column="1"
+                                 Style="{StaticResource TextBoxStyle}"
+                                 Height="36"
+                                 Margin="0,0,12,0"
+                                 KeyDown="NewPatternTextBox_KeyDown"/>
+
+                        <!-- Add button -->
+                        <Button Grid.Column="2"
+                                Content="+ Add"
+                                Click="AddPattern_Click"
+                                Style="{StaticResource PrimaryButtonStyle}"
+                                Width="80"/>
+                    </Grid>
+
+                    <!-- Patterns List -->
+                    <Border Background="#FFFFFF"
+                            BorderBrush="#E4E4E4"
+                            BorderThickness="1"
+                            CornerRadius="4"
+                            Padding="8">
+                        <ItemsControl x:Name="PatternsItemsControl">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="#F6F6F6"
+                                            CornerRadius="4"
+                                            Padding="12,8"
+                                            Margin="0,0,0,4"
+                                            BorderBrush="#E4E4E4"
+                                            BorderThickness="1">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Column="0"
+                                                       Text="{Binding}"
+                                                       Style="{StaticResource BodyTextStyle}"
+                                                       VerticalAlignment="Center"/>
+
+                                            <!-- Move to Rule button -->
+                                            <Button Grid.Column="1"
+                                                    Style="{StaticResource IconButtonOrangeStyle}"
+                                                    ToolTip="Move to Individual Rule"
+                                                    Tag="{Binding}"
+                                                    Margin="0,0,6,0"
+                                                    Click="MovePatternToRule_Click">
+                                                <Path Data="{StaticResource ExportIcon}"
+                                                      Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                                      StrokeThickness="1.5"
+                                                      Width="14" Height="14"
+                                                      Stretch="Uniform"/>
+                                            </Button>
+
+                                            <!-- Delete button -->
+                                            <Button Grid.Column="2"
+                                                    Content="X"
+                                                    Tag="{Binding}"
+                                                    Click="RemovePattern_Click"
+                                                    Style="{StaticResource DeletePatternButtonStyle}"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Border>
+
+                    <TextBlock x:Name="PatternCountText"
+                               Text="0 patterns"
+                               Style="{StaticResource CaptionTextStyle}"
+                               Margin="0,8,0,0"/>
+                </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Tab 2: Browser & Profile -->
+            <TabItem Style="{StaticResource TabItemStyle}">
+                <TabItem.Header>
+                    <TextBlock Text="Browser &amp; Profile"/>
+                </TabItem.Header>
+
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,8,0,0">
                     <StackPanel>
-                        <TextBlock Text="Browser &amp; Profile"
-                                   Style="{StaticResource SubtitleTextStyle}"
-                                   Margin="0,0,0,4"/>
                         <TextBlock Text="Select which browser(s) to use when URLs match this group"
                                    Style="{StaticResource CaptionTextStyle}"
                                    Margin="0,0,0,12"/>
                         <controls:BrowserProfileMultiSelector x:Name="ProfileSelector"/>
                     </StackPanel>
-                </Border>
-            </StackPanel>
-        </ScrollViewer>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
 
         <!-- Fixed Buttons at Bottom -->
-        <Border Grid.Row="1"
+        <Border Grid.Row="2"
                 Background="#F3F3F3"
                 BorderBrush="#E4E4E4"
                 BorderThickness="0,1,0,0"

@@ -168,14 +168,14 @@
                     CornerRadius="4" Padding="10" Margin="0,0,0,10">
                 <StackPanel>
                     <!-- Header with Add Button -->
-                    <Grid Margin="0,0,0,8">
+                    <Grid Margin="0,0,0,12">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="Profiles:" FontWeight="Bold" FontSize="12" VerticalAlignment="Center"/>
                         <Button Grid.Column="1" Content="+ Add" Click="AddProfileButton_Click"
-                                Style="{StaticResource AddButtonStyle}"/>
+                                Style="{StaticResource PrimaryButtonStyle}"  Width="80"/>
                     </Grid>
 
                     <!-- Profiles List -->
@@ -219,7 +219,7 @@
 
                     <!-- Multi-profile hint -->
                     <TextBlock x:Name="MultiProfileHint"
-                               Text="When matched, you'll be shown a picker to choose which profile to use."
+                               Text="When matched, you'll see a list to choose which profile to use."
                                FontSize="11" Foreground="#666" FontStyle="Italic"
                                TextWrapping="Wrap" Margin="0,5,0,0"/>
                 </StackPanel>

@@ -129,20 +129,15 @@
                 </ListBox>
 
                 <!-- Status Section -->
-                <Border Grid.Row="2" Margin="16,8,16,12">
-                    <StackPanel>
-                        <TextBlock Text="Status" FontSize="11" FontWeight="SemiBold"
-                                   Foreground="#666" Margin="0,0,0,8"/>
-                        <Border x:Name="StatusIndicatorBorder" Padding="10,8" CornerRadius="6"
-                                Background="#DFF6DD">
-                            <StackPanel Orientation="Horizontal">
-                                <Ellipse x:Name="StatusDot" Width="8" Height="8"
-                                         Fill="#107C10" Margin="0,0,10,0"
-                                         VerticalAlignment="Center"/>
-                                <TextBlock x:Name="StatusText" Text="Active"
-                                           FontSize="13" Foreground="#1A1A1A"/>
-                            </StackPanel>
-                        </Border>
+                <Border x:Name="StatusIndicatorBorder" Grid.Row="2" Margin="16,8,16,12"
+                        Padding="8,6" CornerRadius="4" Background="#DFF6DD"
+                        BorderBrush="#A5D6A7" BorderThickness="1">
+                    <StackPanel Orientation="Horizontal">
+                        <Ellipse x:Name="StatusDot" Width="6" Height="6"
+                                 Fill="#107C10" Margin="0,0,6,0"
+                                 VerticalAlignment="Center"/>
+                        <TextBlock x:Name="StatusText" Text="Active"
+                                   FontSize="12" Foreground="#107C10"/>
                     </StackPanel>
                 </Border>
 

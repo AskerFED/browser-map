@@ -322,29 +322,51 @@ namespace BrowserSelector.Pages
 
         #region URL Group Actions
 
+        private void UrlGroupCard_Click(object sender, MouseButtonEventArgs e)
+        {
+            // Don't open edit if clicking on buttons or toggle
+            if (e.OriginalSource is System.Windows.Controls.Primitives.ToggleButton ||
+                e.OriginalSource is Button ||
+                (e.OriginalSource as FrameworkElement)?.TemplatedParent is Button ||
+                (e.OriginalSource as FrameworkElement)?.TemplatedParent is System.Windows.Controls.Primitives.ToggleButton)
+            {
+                return;
+            }
+
+            if (sender is Border border && border.Tag is string groupId)
+            {
+                OpenEditUrlGroup(groupId);
+            }
+        }
+
         private void EditUrlGroup_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button button && button.Tag is string groupId)
             {
-                var group = UrlGroupManager.GetGroup(groupId);
-                if (group != null)
+                OpenEditUrlGroup(groupId);
+            }
+        }
+
+        private void OpenEditUrlGroup(string groupId)
+        {
+            var group = UrlGroupManager.GetGroup(groupId);
+            if (group != null)
+            {
+                try
                 {
-                    try
+                    var editWindow = new EditUrlGroupWindow(group);
+                    editWindow.Owner = Window.GetWindow(this);
+                    if (editWindow.ShowDialog() == true)
                     {
-                        var editWindow = new EditUrlGroupWindow(group);
-                        editWindow.Owner = Window.GetWindow(this);
-                        if (editWindow.ShowDialog() == true)
-                        {
-                            LoadUrlGroups();
-                            NotifyDataChanged();
-                        }
+                        LoadUrlGroups();
+                        NotifyDataChanged();
                     }
-                    catch (Exception ex)
-                    {
-                        Logger.Log($"EditUrlGroup_Click ERROR: {ex.Message}");
-                        MessageBox.Show($"Error opening Edit URL Group window: {ex.Message}", "Error",
-                            MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log($"OpenEditUrlGroup ERROR: {ex.Message}");
+                    MessageBox.Show($"Error opening Edit URL Group window: {ex.Message}", "Error",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
@@ -486,6 +508,18 @@ namespace BrowserSelector.Pages
                                 g.UrlPatterns.Any(p => p.ToLowerInvariant().Contains(filter)))
                     .ToList();
             }
+        }
+
+        private void ClearRulesSearch_Click(object sender, RoutedEventArgs e)
+        {
+            RulesSearchBox.Text = "";
+            RulesSearchBox.Focus();
+        }
+
+        private void ClearGroupsSearch_Click(object sender, RoutedEventArgs e)
+        {
+            GroupsSearchBox.Text = "";
+            GroupsSearchBox.Focus();
         }
 
         #endregion
