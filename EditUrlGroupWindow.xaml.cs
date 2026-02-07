@@ -21,6 +21,7 @@ namespace BrowserSelector
         private bool _isEditMode;
         private bool _isBuiltIn;
         private ObservableCollection<string> _patterns;
+        private List<string> _filteredPatterns = new List<string>();
         private List<string> _originalBuiltInPatterns = new List<string>();
 
         public EditUrlGroupWindow() : this(null)
@@ -122,14 +123,100 @@ namespace BrowserSelector
 
         private void RefreshPatternsList()
         {
-            PatternsItemsControl.ItemsSource = null;
-            PatternsItemsControl.ItemsSource = _patterns.ToList();
+            string searchText = NewPatternTextBox?.Text?.Trim().ToLower() ?? "";
 
-            var count = _patterns.Count;
-            PatternCountText.Text = $"{count} pattern{(count != 1 ? "s" : "")}";
-            PatternCountBadge.Text = count.ToString();
+            // Use filtered list for display when searching
+            var displayList = string.IsNullOrEmpty(searchText)
+                ? _patterns.ToList()
+                : _filteredPatterns;
+
+            PatternsItemsControl.ItemsSource = null;
+            PatternsItemsControl.ItemsSource = displayList;
+
+            // Show empty state when: no patterns at all, OR search with no results
+            bool hasSearchText = !string.IsNullOrEmpty(searchText);
+            bool showEmptyState = _patterns.Count == 0 || (hasSearchText && displayList.Count == 0);
+
+            NoResultsPanel.Visibility = showEmptyState ? Visibility.Visible : Visibility.Collapsed;
+            PatternsListBorder.Visibility = showEmptyState ? Visibility.Collapsed : Visibility.Visible;
+
+            // Update empty state text based on context
+            if (_patterns.Count == 0)
+            {
+                NoResultsText.Text = "No patterns yet";
+                NoResultsHint.Text = "Add a pattern above to get started";
+            }
+            else
+            {
+                NoResultsText.Text = "No URL found";
+                NoResultsHint.Text = "Press Enter or click Add to create this pattern";
+            }
+
+            // Update count text
+            var totalCount = _patterns.Count;
+            if (hasSearchText && displayList.Count != totalCount)
+            {
+                PatternCountText.Text = $"{displayList.Count} of {totalCount} patterns";
+            }
+            else
+            {
+                PatternCountText.Text = $"{totalCount} pattern{(totalCount != 1 ? "s" : "")}";
+            }
+            PatternCountBadge.Text = totalCount.ToString();
 
             UpdateRestoreButtonState();
+        }
+
+        private void NewPatternTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            FilterPatterns();
+        }
+
+        private void FilterPatterns()
+        {
+            string searchText = NewPatternTextBox?.Text?.Trim().ToLower() ?? "";
+
+            // Update placeholder visibility
+            if (PatternPlaceholder != null)
+            {
+                PatternPlaceholder.Visibility = string.IsNullOrEmpty(NewPatternTextBox?.Text)
+                    ? Visibility.Visible : Visibility.Collapsed;
+            }
+
+            // Update clear button visibility
+            if (ClearPatternButton != null)
+            {
+                ClearPatternButton.Visibility = string.IsNullOrEmpty(NewPatternTextBox?.Text)
+                    ? Visibility.Collapsed : Visibility.Visible;
+            }
+
+            if (string.IsNullOrEmpty(searchText))
+            {
+                // Show all patterns
+                _filteredPatterns = _patterns.ToList();
+                if (AddPatternButton != null)
+                    AddPatternButton.IsEnabled = false;
+            }
+            else
+            {
+                // Filter patterns that contain the search text
+                _filteredPatterns = _patterns
+                    .Where(p => p.ToLower().Contains(searchText))
+                    .ToList();
+
+                // Enable Add button only when no matches found and pattern doesn't already exist
+                bool exactMatch = _patterns.Any(p => p.ToLower() == searchText);
+                if (AddPatternButton != null)
+                    AddPatternButton.IsEnabled = _filteredPatterns.Count == 0 && !exactMatch;
+            }
+
+            RefreshPatternsList();
+        }
+
+        private void ClearPattern_Click(object sender, RoutedEventArgs e)
+        {
+            NewPatternTextBox.Clear();
+            NewPatternTextBox.Focus();
         }
 
         private void NewPatternTextBox_KeyDown(object sender, KeyEventArgs e)
@@ -157,8 +244,8 @@ namespace BrowserSelector
             // Hide previous warning
             PatternWarningBorder.Visibility = Visibility.Collapsed;
 
-            // Validate pattern format AND check for individual rule conflicts
-            var result = ValidationService.ValidatePatternForGroup(pattern);
+            // Validate pattern format AND check for individual rule conflicts AND other group conflicts
+            var result = ValidationService.ValidatePatternForGroup(pattern, _isEditMode ? _group?.Id : null);
 
             // Show error if format invalid
             if (!result.IsValid)
@@ -179,20 +266,29 @@ namespace BrowserSelector
                 return;
             }
 
-            // Show warning if pattern exists as individual rule (but still add)
+            // Block adding if pattern exists in individual rules or other groups
             if (result.HasWarnings)
             {
-                var warning = result.Warnings.First();
-                PatternWarningText.Text = warning.Message;
+                // Combine all warning messages and show as error (block adding)
+                var errorMessages = string.Join("\n", result.Warnings.Select(w => w.Message));
+                PatternWarningText.Text = errorMessages;
                 PatternWarningBorder.Visibility = Visibility.Visible;
                 PatternWarningBorder.BringIntoView();
+                // Don't clear search text - let user see what they tried to add
+                return;
             }
 
-            // Add pattern (even with warning)
+            // Add pattern
             _patterns.Add(normalizedPattern);
             NewPatternTextBox.Clear();
             NewPatternTextBox.Focus();
-            RefreshPatternsList();
+            FilterPatterns(); // Reset filter state after adding
+
+            // Scroll to bottom to show newly added pattern (after layout update)
+            Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded, new Action(() =>
+            {
+                PatternsScrollViewer.ScrollToEnd();
+            }));
         }
 
         private void RemovePattern_Click(object sender, RoutedEventArgs e)

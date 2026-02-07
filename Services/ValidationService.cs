@@ -169,9 +169,11 @@ namespace BrowserSelector.Services
 
         /// <summary>
         /// Validates a pattern for adding to a group.
-        /// Checks format AND if pattern exists as individual rule (warning).
+        /// Checks format, if pattern exists as individual rule, and if pattern exists in other groups.
         /// </summary>
-        public static ValidationResult ValidatePatternForGroup(string pattern)
+        /// <param name="pattern">The pattern to validate</param>
+        /// <param name="currentGroupId">Optional: The ID of the group being edited (to exclude from overlap check)</param>
+        public static ValidationResult ValidatePatternForGroup(string pattern, string? currentGroupId = null)
         {
             // First validate format
             var result = ValidatePattern(pattern);
@@ -195,6 +197,29 @@ namespace BrowserSelector.Services
                     Details = $"Individual rule: {matchingRule.Pattern}",
                     ConflictingEntity = matchingRule.Pattern
                 });
+            }
+
+            // Check if pattern exists in other groups
+            var allGroups = UrlGroupManager.LoadGroups()
+                .Where(g => currentGroupId == null || g.Id != currentGroupId);
+
+            foreach (var otherGroup in allGroups)
+            {
+                var matchingPattern = otherGroup.UrlPatterns?
+                    .FirstOrDefault(p => NormalizePattern(p) == normalizedPattern);
+
+                if (matchingPattern != null)
+                {
+                    result.Warnings.Add(new ValidationMessage
+                    {
+                        Code = ValidationCodes.GROUP_PATTERN_OVERLAP,
+                        Severity = ValidationSeverity.Warning,
+                        Message = $"This pattern already exists in group '{otherGroup.Name}'.",
+                        Details = $"Group: {otherGroup.Name}",
+                        ConflictingEntity = otherGroup.Name
+                    });
+                    break; // Only report first conflict
+                }
             }
 
             return result;
