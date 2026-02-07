@@ -1,11 +1,31 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using System.Text.Json;
+using BrowserSelector.Services;
 
 namespace BrowserSelector
 {
     public class AppSettings
     {
+        /// <summary>
+        /// Schema version for data migration. Increment when making breaking changes.
+        /// Version history:
+        /// - 1: Initial version (implicit, pre-versioning)
+        /// - 2: Added schema versioning, multi-profile rules
+        /// </summary>
+        public int SchemaVersion { get; set; } = 2;
+
+        /// <summary>
+        /// Application version that last saved these settings.
+        /// </summary>
+        public string AppVersion { get; set; } = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "1.0.0";
+
+        /// <summary>
+        /// Timestamp when settings were last saved.
+        /// </summary>
+        public DateTime LastSaved { get; set; } = DateTime.UtcNow;
+
         public bool IsEnabled { get; set; } = true;
         public string DefaultBrowserName { get; set; } = string.Empty;
         public string DefaultBrowserPath { get; set; } = string.Empty;
@@ -35,49 +55,55 @@ namespace BrowserSelector
 
         private static AppSettings? _cachedSettings = null;
 
+        /// <summary>
+        /// Current schema version. Increment when making breaking changes to data format.
+        /// </summary>
+        public const int CurrentSchemaVersion = 2;
+
         public static AppSettings LoadSettings()
         {
             if (_cachedSettings != null)
                 return _cachedSettings;
 
-            try
+            _cachedSettings = JsonStorageService.Load<AppSettings>(SettingsPath);
+
+            // Check for schema version migrations
+            if (_cachedSettings.SchemaVersion < CurrentSchemaVersion)
             {
-                if (File.Exists(SettingsPath))
-                {
-                    var json = File.ReadAllText(SettingsPath);
-                    _cachedSettings = JsonSerializer.Deserialize<AppSettings>(json) ?? new AppSettings();
-                    return _cachedSettings;
-                }
-            }
-            catch
-            {
-                // If there's an error reading, start fresh
+                MigrateSettings(_cachedSettings);
             }
 
-            _cachedSettings = new AppSettings();
             return _cachedSettings;
+        }
+
+        /// <summary>
+        /// Performs schema migrations based on version number.
+        /// </summary>
+        private static void MigrateSettings(AppSettings settings)
+        {
+            // Create backup before migration
+            JsonStorageService.CreatePreMigrationBackup(SettingsPath, $"v{settings.SchemaVersion}-to-v{CurrentSchemaVersion}");
+
+            // Version 0/1 -> 2: Add schema versioning (no data changes needed)
+            if (settings.SchemaVersion < 2)
+            {
+                Logger.Log($"Migrating settings from schema v{settings.SchemaVersion} to v{CurrentSchemaVersion}");
+                settings.SchemaVersion = CurrentSchemaVersion;
+                SaveSettings(settings);
+            }
+
+            // Future migrations would go here:
+            // if (settings.SchemaVersion < 3) { ... }
         }
 
         public static void SaveSettings(AppSettings settings)
         {
-            try
-            {
-                var directory = Path.GetDirectoryName(SettingsPath);
-                if (directory != null && !Directory.Exists(directory))
-                {
-                    Directory.CreateDirectory(directory);
-                }
+            // Update metadata before saving
+            settings.LastSaved = DateTime.UtcNow;
+            settings.AppVersion = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "1.0.0";
 
-                var options = new JsonSerializerOptions { WriteIndented = true };
-                var json = JsonSerializer.Serialize(settings, options);
-                File.WriteAllText(SettingsPath, json);
-
-                _cachedSettings = settings;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Failed to save settings: {ex.Message}", ex);
-            }
+            JsonStorageService.Save(SettingsPath, settings);
+            _cachedSettings = settings;
         }
 
         public static void ClearCache()

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using BrowserSelector.Services;
 using Microsoft.Win32;
 
 namespace BrowserSelector.Pages
@@ -234,6 +235,103 @@ namespace BrowserSelector.Pages
             {
                 Logger.Log($"OpenWindowsSettings_Click ERROR: {ex.Message}");
                 MessageBox.Show("Could not open Windows Settings.", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ExportData_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var dialog = new SaveFileDialog
+                {
+                    Title = "Export LinkRouter Data",
+                    Filter = "JSON Files (*.json)|*.json|All Files (*.*)|*.*",
+                    DefaultExt = "json",
+                    FileName = $"LinkRouter_Backup_{DateTime.Now:yyyy-MM-dd}"
+                };
+
+                if (dialog.ShowDialog() == true)
+                {
+                    DataExportService.Export(dialog.FileName);
+
+                    MessageBox.Show(
+                        $"Data exported successfully!\n\nFile: {dialog.FileName}\n\n" +
+                        "This backup includes:\n" +
+                        "- All URL rules\n" +
+                        "- URL groups and overrides\n" +
+                        "- Application settings",
+                        "Export Complete",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log($"ExportData_Click ERROR: {ex.Message}");
+                MessageBox.Show($"Export failed: {ex.Message}", "Export Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ImportData_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var dialog = new OpenFileDialog
+                {
+                    Title = "Import LinkRouter Data",
+                    Filter = "JSON Files (*.json)|*.json|All Files (*.*)|*.*",
+                    DefaultExt = "json"
+                };
+
+                if (dialog.ShowDialog() == true)
+                {
+                    // Validate the file first
+                    var (valid, message, package) = DataExportService.ValidateExportFile(dialog.FileName);
+
+                    if (!valid)
+                    {
+                        MessageBox.Show($"Cannot import this file:\n\n{message}", "Invalid File",
+                            MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    // Confirm import
+                    var confirmResult = MessageBox.Show(
+                        $"{message}\n\n" +
+                        "This will replace your current data.\n" +
+                        "A backup will be created automatically before importing.\n\n" +
+                        "Do you want to continue?",
+                        "Confirm Import",
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Question);
+
+                    if (confirmResult != MessageBoxResult.Yes)
+                        return;
+
+                    // Perform import
+                    var result = DataExportService.Import(dialog.FileName, replaceExisting: true);
+
+                    if (result.Success)
+                    {
+                        MessageBox.Show(result.Message, "Import Complete",
+                            MessageBoxButton.OK, MessageBoxImage.Information);
+
+                        // Refresh the page
+                        LoadData();
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Import failed:\n\n{result.Message}", "Import Error",
+                            MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log($"ImportData_Click ERROR: {ex.Message}");
+                MessageBox.Show($"Import failed: {ex.Message}", "Import Error",
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }

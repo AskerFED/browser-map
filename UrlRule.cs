@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using BrowserSelector.Services;
 
 namespace BrowserSelector
 {
@@ -121,75 +122,57 @@ namespace BrowserSelector
             if (_cachedRules != null)
                 return _cachedRules;
 
-            try
+            _cachedRules = JsonStorageService.Load<List<UrlRule>>(ConfigPath);
+
+            // Check if migration is needed BEFORE modifying any data
+            bool needsMigration = _cachedRules.Any(r =>
+                (r.Profiles == null || r.Profiles.Count == 0) &&
+                !string.IsNullOrEmpty(r.BrowserName));
+
+            // CRITICAL: Create safety backup BEFORE migration
+            if (needsMigration)
             {
-                if (File.Exists(ConfigPath))
+                JsonStorageService.CreatePreMigrationBackup(ConfigPath, "single-to-multi-profile");
+            }
+
+            // Migrate old single-profile rules to new Profiles list format
+            bool needsSave = false;
+            foreach (var rule in _cachedRules)
+            {
+                if ((rule.Profiles == null || rule.Profiles.Count == 0) &&
+                    !string.IsNullOrEmpty(rule.BrowserName))
                 {
-                    var json = File.ReadAllText(ConfigPath);
-                    _cachedRules = JsonSerializer.Deserialize<List<UrlRule>>(json) ?? new List<UrlRule>();
-
-                    // Migrate old single-profile rules to new Profiles list format
-                    bool needsSave = false;
-                    foreach (var rule in _cachedRules)
+                    rule.Profiles = new List<RuleProfile>
                     {
-                        if ((rule.Profiles == null || rule.Profiles.Count == 0) &&
-                            !string.IsNullOrEmpty(rule.BrowserName))
+                        new RuleProfile
                         {
-                            rule.Profiles = new List<RuleProfile>
-                            {
-                                new RuleProfile
-                                {
-                                    BrowserName = rule.BrowserName,
-                                    BrowserPath = rule.BrowserPath,
-                                    BrowserType = rule.BrowserType,
-                                    ProfileName = rule.ProfileName,
-                                    ProfilePath = rule.ProfilePath,
-                                    ProfileArguments = rule.ProfileArguments,
-                                    DisplayOrder = 0
-                                }
-                            };
-                            needsSave = true;
+                            BrowserName = rule.BrowserName,
+                            BrowserPath = rule.BrowserPath,
+                            BrowserType = rule.BrowserType,
+                            ProfileName = rule.ProfileName,
+                            ProfilePath = rule.ProfilePath,
+                            ProfileArguments = rule.ProfileArguments,
+                            DisplayOrder = 0
                         }
-                    }
-
-                    // Save migrated rules
-                    if (needsSave)
-                    {
-                        SaveRules(_cachedRules);
-                    }
-
-                    return _cachedRules;
+                    };
+                    needsSave = true;
                 }
             }
-            catch
+
+            // Save migrated rules
+            if (needsSave)
             {
-                // If there's an error reading, start fresh
+                SaveRules(_cachedRules);
+                Logger.Log("Migrated rules from single-profile to multi-profile format");
             }
 
-            _cachedRules = new List<UrlRule>();
             return _cachedRules;
         }
 
         public static void SaveRules(List<UrlRule> rules)
         {
-            try
-            {
-                var directory = Path.GetDirectoryName(ConfigPath);
-                if (directory != null && !Directory.Exists(directory))
-                {
-                    Directory.CreateDirectory(directory);
-                }
-
-                var options = new JsonSerializerOptions { WriteIndented = true };
-                var json = JsonSerializer.Serialize(rules, options);
-                File.WriteAllText(ConfigPath, json);
-
-                _cachedRules = rules;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Failed to save rules: {ex.Message}", ex);
-            }
+            JsonStorageService.Save(ConfigPath, rules);
+            _cachedRules = rules;
         }
 
         public static void AddRule(UrlRule rule)

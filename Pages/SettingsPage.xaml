@@ -126,6 +126,32 @@
                 </StackPanel>
             </Border>
 
+            <!-- Backup & Restore Section -->
+            <TextBlock Text="Backup &amp; Restore"
+                       Style="{StaticResource SectionHeaderStyle}"/>
+
+            <Border Style="{StaticResource SettingsCardStyle}" Padding="16">
+                <StackPanel>
+                    <TextBlock Text="Export your rules, groups, and settings to a backup file, or restore from a previous backup."
+                               Style="{StaticResource BodyTextStyle}"
+                               TextWrapping="Wrap"
+                               Margin="0,0,0,16"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Button x:Name="ExportDataButton"
+                                Content="Export"
+                                Style="{StaticResource PrimaryButtonStyle}"
+                                Click="ExportData_Click"
+                                Width="140"
+                                Margin="0,0,12,0"/>
+                        <Button x:Name="ImportDataButton"
+                                Content="Import"
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                Click="ImportData_Click"
+                                Width="140"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
             <!-- About Section -->
             <TextBlock Text="About"
                        Style="{StaticResource SectionHeaderStyle}"/>
