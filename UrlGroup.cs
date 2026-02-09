@@ -22,8 +22,16 @@ namespace BrowserSelector
         /// </summary>
         [JsonIgnore]
         public string DateDisplay => UpdatedDate.HasValue
-            ? $"Updated {UpdatedDate.Value:MMM d, yyyy}"
-            : $"Added {CreatedDate:MMM d, yyyy}";
+            ? $"Updated: {UpdatedDate.Value:MMM d, yyyy}"
+            : $"Added: {CreatedDate:MMM d, yyyy}";
+
+        /// <summary>
+        /// Full date and time for tooltip display
+        /// </summary>
+        [JsonIgnore]
+        public string DateTooltip => UpdatedDate.HasValue
+            ? $"Updated: {UpdatedDate.Value:MMMM d, yyyy 'at' h:mm tt}"
+            : $"Added: {CreatedDate:MMMM d, yyyy 'at' h:mm tt}";
     }
 
     /// <summary>

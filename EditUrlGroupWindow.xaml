@@ -408,7 +408,8 @@
                                                        Text="{Binding DateDisplay}"
                                                        FontSize="11"
                                                        Foreground="#999"
-                                                       Margin="0,3,0,0"/>
+                                                       Margin="0,3,0,0"
+                                                       ToolTip="{Binding DateTooltip}"/>
 
                                             <!-- Move to Rule button -->
                                             <Button Grid.Row="0" Grid.RowSpan="2" Grid.Column="1"
