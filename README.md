@@ -57,7 +57,7 @@ A Windows desktop application that intelligently routes URLs to the correct brow
 ```bash
 git clone https://github.com/yourusername/LinkRouter.git
 cd LinkRouter
-dotnet publish -c Release -r win-x64 --self-contained
+dotnet publish BrowserSelector.csproj -c Release -r win-x64 --self-contained
 ```
 
 Output: `bin\Release\net8.0-windows\win-x64\publish\LinkRouter.exe`
