@@ -164,6 +164,11 @@ namespace BrowserSelector.Pages
                     LoadUrlGroups();
                     NotifyDataChanged();
                 }
+                // Refresh rules list if patterns were moved to individual rules
+                if (editWindow.RulesWereModified)
+                {
+                    LoadRules();
+                }
             }
             catch (Exception ex)
             {
@@ -370,6 +375,11 @@ namespace BrowserSelector.Pages
                     {
                         LoadUrlGroups();
                         NotifyDataChanged();
+                    }
+                    // Refresh rules list if patterns were moved to individual rules
+                    if (editWindow.RulesWereModified)
+                    {
+                        LoadRules();
                     }
                 }
                 catch (Exception ex)

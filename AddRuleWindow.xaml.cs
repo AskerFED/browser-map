@@ -14,6 +14,7 @@ namespace BrowserSelector
     {
         private UrlRule _existingRule;
         private bool _isEditMode;
+        private string? _sourceGroupId;
 
         /// <summary>
         /// Constructor for adding a new rule
@@ -30,6 +31,15 @@ namespace BrowserSelector
         public AddRuleWindow(string suggestedPattern) : this()
         {
             PatternTextBox.Text = suggestedPattern;
+        }
+
+        /// <summary>
+        /// Constructor for moving a pattern from a group to an individual rule
+        /// </summary>
+        public AddRuleWindow(string suggestedPattern, string sourceGroupId) : this()
+        {
+            PatternTextBox.Text = suggestedPattern;
+            _sourceGroupId = sourceGroupId;
         }
 
         /// <summary>
@@ -70,7 +80,8 @@ namespace BrowserSelector
             var result = ValidationService.ValidateIndividualRule(
                 PatternTextBox.Text,
                 profiles,
-                _isEditMode ? _existingRule?.Id : null
+                _isEditMode ? _existingRule?.Id : null,
+                _sourceGroupId
             );
 
             // Show validation messages

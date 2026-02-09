@@ -174,6 +174,11 @@ namespace BrowserSelector.Services
                         }
                         UrlRuleManager.SaveRules(existingRules);
                     }
+
+                    // Trigger migration for imported rules (converts old single-profile format to multi-profile)
+                    UrlRuleManager.ClearCache();
+                    UrlRuleManager.LoadRules();
+
                     result.RulesImported = package.Rules.Count;
                 }
 

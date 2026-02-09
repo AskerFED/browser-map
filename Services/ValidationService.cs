@@ -235,7 +235,8 @@ namespace BrowserSelector.Services
         public static ValidationResult ValidateIndividualRule(
             string pattern,
             List<RuleProfile> profiles,
-            string? existingRuleId = null)
+            string? existingRuleId = null,
+            string? excludeGroupId = null)
         {
             var result = new ValidationResult();
 
@@ -268,7 +269,7 @@ namespace BrowserSelector.Services
             result.Warnings.AddRange(browserValidation.Warnings);
 
             // 4. Check for conflicts
-            var conflicts = FindConflicts(normalizedPattern, existingRuleId, null);
+            var conflicts = FindConflicts(normalizedPattern, existingRuleId, excludeGroupId);
 
             // Exact duplicate = Error
             if (conflicts.HasExactDuplicate && conflicts.DuplicateRule != null)

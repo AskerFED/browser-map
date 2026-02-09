@@ -24,6 +24,12 @@ namespace BrowserSelector
         private List<string> _filteredPatterns = new List<string>();
         private List<string> _originalBuiltInPatterns = new List<string>();
 
+        /// <summary>
+        /// Indicates if individual rules were added via "Move to Rule" during this session.
+        /// The caller should check this to refresh the rules list.
+        /// </summary>
+        public bool RulesWereModified { get; private set; }
+
         public EditUrlGroupWindow() : this(null)
         {
         }
@@ -295,8 +301,12 @@ namespace BrowserSelector
         {
             if (sender is Button button && button.Tag is string pattern)
             {
-                _patterns.Remove(pattern);
-                RefreshPatternsList();
+                if (ConfirmationDialog.Show(this, "Remove Pattern",
+                    $"Are you sure you want to remove '{pattern}' from this group?", "Remove", "Cancel"))
+                {
+                    _patterns.Remove(pattern);
+                    RefreshPatternsList();
+                }
             }
         }
 
@@ -326,8 +336,8 @@ namespace BrowserSelector
             {
                 try
                 {
-                    // Open AddRuleWindow with the pattern pre-filled
-                    var addWindow = new AddRuleWindow(pattern);
+                    // Open AddRuleWindow with the pattern pre-filled, passing group ID to exclude from validation
+                    var addWindow = new AddRuleWindow(pattern, _group.Id);
                     addWindow.Owner = this;
 
                     if (addWindow.ShowDialog() == true)
@@ -335,6 +345,9 @@ namespace BrowserSelector
                         // Remove pattern from current group
                         _patterns.Remove(pattern);
                         RefreshPatternsList();
+
+                        // Flag that rules were modified so caller can refresh rules list
+                        RulesWereModified = true;
 
                         // Show confirmation
                         MessageBox.Show($"Pattern '{pattern}' has been moved to an individual rule.",
