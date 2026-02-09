@@ -23,7 +23,9 @@
         { "id": "m365-dynamics", "pattern": "dynamics.com", "versionAdded": "1.0.0" },
         { "id": "m365-powerbi", "pattern": "powerbi.com", "versionAdded": "1.0.0" },
         { "id": "m365-powerapps", "pattern": "powerapps.com", "versionAdded": "1.0.0" },
-        { "id": "m365-flow", "pattern": "flow.microsoft.com", "versionAdded": "1.0.0" }
+        { "id": "m365-flow", "pattern": "flow.microsoft.com", "versionAdded": "1.0.0" },
+        { "id": "m365-engage", "pattern": "engage.cloud.microsoft", "versionAdded": "1.0.0" },
+        { "id": "m365-yammer", "pattern": "yammer.com", "versionAdded": "1.0.0" }
       ]
     },
     {
