@@ -1,5 +1,9 @@
 # LinkRouter
 
+[![GitHub release](https://img.shields.io/github/v/release/AskerFED/link-router)](https://github.com/AskerFED/link-router/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Windows](https://img.shields.io/badge/platform-Windows%2010%2F11-blue)](https://github.com/AskerFED/link-router)
+
 A Windows desktop application that intelligently routes URLs to the correct browser and profile. When you click any link from Teams, Outlook, Slack, or any other app, LinkRouter intercepts it and opens it in the right browser based on your configured rules.
 
 ## Table of Contents
@@ -55,7 +59,7 @@ A Windows desktop application that intelligently routes URLs to the correct brow
 ### Option 2: Build from Source
 
 ```bash
-git clone https://github.com/yourusername/LinkRouter.git
+git clone https://github.com/AskerFED/link-router.git
 cd LinkRouter
 dotnet publish BrowserSelector.csproj -c Release -r win-x64 --self-contained
 ```

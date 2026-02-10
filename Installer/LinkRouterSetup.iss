@@ -3,14 +3,14 @@
 
 #define MyAppName "LinkRouter"
 #define MyAppVersion "1.0.0"
-#define MyAppPublisher "LinkRouter"
-#define MyAppURL "https://github.com/user/LinkRouter"
+#define MyAppPublisher "AskerFED"
+#define MyAppURL "https://github.com/AskerFED/link-router"
 #define MyAppExeName "LinkRouter.exe"
 #define MyAppDescription "Browser selection and URL routing utility"
 
 [Setup]
 ; NOTE: Generate a new GUID for AppId when releasing a different application
-AppId={{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}
+AppId={{B2F3A1C4-A9CA-4611-8635-E7756F3CFE0D}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppVerName={#MyAppName} {#MyAppVersion}
