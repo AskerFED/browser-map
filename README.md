@@ -6,18 +6,21 @@
 
 A Windows desktop application that intelligently routes URLs to the correct browser and profile. When you click any link from Teams, Outlook, Slack, or any other app, LinkRouter intercepts it and opens it in the right browser based on your configured rules.
 
+---
+
 ## Table of Contents
 
-- [Features](#features)
-- [Installation](#installation)
 - [Quick Start](#quick-start)
-- [How It Works](#how-it-works)
-- [Usage Guide](#usage-guide)
-  - [Individual Rules](#individual-rules)
+- [Features](#features)
+  - [URL Rules](#url-rules)
   - [URL Groups](#url-groups)
-  - [Multi-Profile Rules](#multi-profile-rules)
-  - [Moving Patterns](#moving-patterns)
-- [Configuration](#configuration)
+  - [Multi-Profile Selection](#multi-profile-selection)
+  - [Smart Notifications](#smart-notifications)
+  - [Clipboard Monitoring](#clipboard-monitoring)
+  - [System Tray](#system-tray)
+- [Settings](#settings)
+- [Installation](#installation)
+- [How It Works](#how-it-works)
 - [Command-Line Options](#command-line-options)
 - [Troubleshooting](#troubleshooting)
 - [Browser Support](#browser-support)
@@ -26,24 +29,222 @@ A Windows desktop application that intelligently routes URLs to the correct brow
 
 ---
 
+## Quick Start
+
+Getting started takes less than a minute:
+
+1. **Launch LinkRouter** — The settings window opens automatically
+2. **Set as Default Browser** — Go to Settings and click "Open Windows Settings"
+3. **Choose LinkRouter** — Select LinkRouter for HTTP and HTTPS links
+4. **Pick a Fallback Browser** — Choose which browser opens when no rules match
+5. **Create Rules** — Add rules for websites you want to route to specific browsers
+
+<br/>
+
+![Home Dashboard](docs/screenshots/home-page.png)
+
+The **Home** tab shows your fallback browser selection, statistics for your rules and groups, and quick actions to manage your configuration.
+
+---
+
 ## Features
 
-- **Intelligent URL Routing** - Route URLs to specific browsers/profiles based on domain patterns
-- **Multi-Browser Support** - Works with Chrome, Edge, Firefox, Brave, Opera, and Opera GX
-- **Profile Management** - Detects and uses all your browser profiles (personal, work, dev)
-- **Multi-Profile Rules** - Single rules can offer multiple browser/profile choices via picker
-- **URL Groups** - Group related URLs (e.g., all Microsoft 365 domains) with shared settings
-- **Built-in Groups** - Pre-configured groups for Microsoft 365 and Google Suite (disabled by default)
-- **Move Patterns** - Easily move URL patterns between groups and individual rules
-- **Pattern Validation** - Real-time validation with conflict detection and warnings
-- **Default Browser Fallback** - Set a fallback browser when no rules match
-- **Toast Notifications** - Quick rule creation from notification when no rule matches
-- **Clipboard Monitoring** - Monitor clipboard for URLs and automatically route them
-- **System Tray Integration** - Minimize to system tray with quick access menu
-- **Single Instance** - Prevents multiple instances from running simultaneously
-- **Windows Integration** - Registers as a Windows browser handler for http/https protocols
-- **Import/Export** - Full backup and restore functionality
-- **Atomic Saves** - Safe file operations with automatic rolling backups
+### URL Rules
+
+Rules tell LinkRouter which browser to use for specific websites. For example:
+- `github.com` → Open in Chrome (Work profile)
+- `netflix.com` → Open in Firefox (Personal profile)
+
+<br/>
+
+![Rules List](docs/screenshots/rules-list.png)
+
+Each rule displays:
+- **Toggle switch** — Enable or disable the rule
+- **URL pattern** — The domain or keyword to match
+- **Browser profiles** — Which browser(s) will open matching URLs
+- **Last updated** — When the rule was last modified
+- **Actions** — Move, edit, or delete the rule
+
+<br/>
+
+**Creating a Rule:**
+
+1. Click **Manage Rules** in the sidebar
+2. Click the **+ Add Rule** button
+3. Enter a URL pattern (like `github.com` or `slack`)
+4. Select a browser and profile
+5. Click **Add**
+
+<br/>
+
+![Add Rule Dialog](docs/screenshots/add-rule-dialog.png)
+
+Enter any domain name or keyword. LinkRouter will match it against URLs and open them in your chosen browser.
+
+---
+
+### URL Groups
+
+URL Groups let you manage many related URLs together. Instead of creating 20 separate rules for Microsoft services, create one group with all the URLs.
+
+<br/>
+
+![URL Groups List](docs/screenshots/url-groups-list.png)
+
+**Built-in Groups (disabled by default):**
+
+| Group | Services Included | URLs |
+|-------|-------------------|------|
+| **Microsoft 365** | Outlook, Teams, SharePoint, OneDrive, Azure, Office | 19 |
+| **Google Suite** | Gmail, Drive, Docs, Sheets, Calendar, Meet, Chat | 13 |
+
+Enable a built-in group, assign a browser, and all those URLs are handled automatically.
+
+<br/>
+
+**Editing a Group:**
+
+![Edit URL Group](docs/screenshots/multi-profile-mode.png)
+
+Configure the group name, description, URL patterns, and which browser/profile to use. You can also enable clipboard notifications for the entire group.
+
+<br/>
+
+**Moving Rules to Groups:**
+
+Keep your configuration organized by moving individual rules into groups:
+
+![Move to Group](docs/screenshots/move-to-group.png)
+
+Click the export icon on any rule to move it into Microsoft 365, Google Suite, or your own custom groups.
+
+---
+
+### Multi-Profile Selection
+
+Sometimes you need to choose which browser to use each time. A work URL might need your Work Chrome profile or Personal Firefox depending on the situation.
+
+| Profiles Assigned | Behavior |
+|-------------------|----------|
+| 1 profile | Opens automatically |
+| 2+ profiles | Shows picker to choose |
+
+<br/>
+
+![Profile Picker](docs/screenshots/profile-picker.png)
+
+When a URL matches a rule with multiple profiles:
+- The URL and matched rule name appear at the top
+- Click any profile to open the link
+- Click Cancel to close without opening
+
+---
+
+### Smart Notifications
+
+When you click a URL that doesn't match any rule, LinkRouter opens it in your fallback browser and shows a notification.
+
+<br/>
+
+![Smart Notification](docs/screenshots/smart-notification.png)
+
+Click **Create Rule** to instantly add a rule for that domain — no need to open settings and configure it manually.
+
+---
+
+### Clipboard Monitoring
+
+When you copy a URL that matches an existing rule, LinkRouter shows you where it will open.
+
+<br/>
+
+![Clipboard Notification](docs/screenshots/clipboard-notification.png)
+
+The notification shows:
+- The domain you copied
+- Which rule matched
+- Which browser and profile will be used
+- Option to open immediately or dismiss
+
+---
+
+### System Tray
+
+LinkRouter runs in your system tray for quick access without opening the full settings window.
+
+<br/>
+
+![System Tray Menu](docs/screenshots/tray-clipboard-monitoring.png)
+
+Right-click the tray icon for quick options:
+- **Monitoring Active** — Toggle clipboard monitoring
+- **Pause for...** — Temporarily disable monitoring
+- **Settings** — Open the settings window
+- **Quit** — Close LinkRouter
+
+---
+
+## Settings
+
+The Settings page controls how LinkRouter behaves.
+
+<br/>
+
+![Settings Page](docs/screenshots/status-active.png)
+
+<br/>
+
+### Default Browser Registration
+
+The status indicator at the bottom-left shows your setup status:
+
+| Status | Meaning |
+|--------|---------|
+| 🟢 **Active** | LinkRouter is your default browser — everything works |
+| 🟠 **Not Default** | You need to set LinkRouter as default in Windows |
+
+<br/>
+
+![Not Default Status](docs/screenshots/status-not-default.png)
+
+If you see the orange "Not Default" status, click **Open Windows Settings** and set LinkRouter as your default browser.
+
+<br/>
+
+### Available Options
+
+| Setting | Description |
+|---------|-------------|
+| **Enable Rules Processing** | Master switch — turn OFF to send all URLs to fallback browser |
+| **Enable Clipboard Monitoring** | Get notified when you copy a URL that matches a rule |
+| **Show Unmatched URL Notifications** | See a notification when opening unknown URLs |
+
+<br/>
+
+### Backup & Restore
+
+Never lose your configuration — export everything to a file.
+
+<br/>
+
+![Backup & Restore](docs/screenshots/backup-restore.png)
+
+- **Export** — Save all rules, groups, and settings to a JSON file
+- **Import** — Restore from a backup (creates a safety backup first)
+
+<br/>
+
+### Data Storage
+
+Your data is saved in `%APPDATA%\LinkRouter\`:
+
+| File | Contents |
+|------|----------|
+| `settings.json` | Preferences and fallback browser |
+| `rules.json` | Individual URL rules |
+| `urlgroups.json` | URL groups and patterns |
+| `backups/` | Automatic backups |
 
 ---
 
@@ -56,7 +257,7 @@ A Windows desktop application that intelligently routes URLs to the correct brow
 
 ### Option 1: Installer (Recommended)
 
-1. Download `LinkRouterSetup-1.0.0.exe` from Releases
+1. Download `LinkRouterSetup-1.0.0.exe` from [Releases](https://github.com/AskerFED/link-router/releases)
 2. Run the installer and follow the prompts
 3. Application installs to `C:\Program Files\LinkRouter\`
 
@@ -76,168 +277,39 @@ Copy `LinkRouter.exe` anywhere and run it. Data is stored in `%APPDATA%\LinkRout
 
 ---
 
-## Quick Start
-
-1. **Launch LinkRouter** - Settings window opens on first run
-2. **Register as Browser** - Click "Open Windows Settings" in the Settings tab
-3. **Set as Default** - In Windows Settings, set LinkRouter as default for HTTP/HTTPS
-4. **Configure Default Browser** - Select your fallback browser on the Home tab
-5. **Create Rules** - Add rules for domains you want to route to specific browsers
-
-**Quick Rule Creation**: When you click a URL with no matching rule, it opens in your default browser and shows a toast notification. Click the notification to create a rule for that domain.
-
----
-
 ## How It Works
 
 ```
 URL clicked (Teams, Outlook, Slack, etc.)
-        |
-        v
+        ↓
 LinkRouter intercepts as default browser
-        |
-        v
-+------------------------------------------+
-| Priority 1: URL Groups                    |
-| (pattern collections like Microsoft 365)  |
-+------------------+-----------------------+
-                   | No match
-                   v
-+------------------------------------------+
-| Priority 2: Individual URL Rules          |
-| (single-pattern rules with browser/profile)|
-+------------------+-----------------------+
-                   | No match
-                   v
-+------------------------------------------+
-| Priority 3: Default Browser               |
-| Opens in fallback browser with toast      |
-| notification offering to create a rule    |
-+------------------------------------------+
+        ↓
+┌──────────────────────────────────────┐
+│  Check URL Groups                    │
+│  (Microsoft 365, Google Suite, etc.) │
+└──────────────────┬───────────────────┘
+                   ↓ No match
+┌──────────────────────────────────────┐
+│  Check Individual Rules              │
+│  (your custom URL rules)             │
+└──────────────────┬───────────────────┘
+                   ↓ No match
+┌──────────────────────────────────────┐
+│  Open in Fallback Browser            │
+│  (show notification to create rule)  │
+└──────────────────────────────────────┘
 ```
 
 ### Pattern Matching
 
-| Pattern | Matches |
-|---------|---------|
-| `github.com` | `github.com`, `www.github.com`, `gist.github.com` |
-| `docs.google.com` | Only `docs.google.com` |
-| `sharepoint.com` | All SharePoint sites: `*.sharepoint.com` |
+| Pattern | What It Matches |
+|---------|-----------------|
+| `github.com` | github.com, www.github.com, gist.github.com |
+| `docs.google.com` | Only docs.google.com |
+| `sharepoint.com` | All SharePoint sites |
+| `slack` | Any URL containing "slack" |
 
-**Note**: Wildcards (`*`) are not supported. Use domain patterns for subdomain matching.
-
----
-
-## Usage Guide
-
-### Individual Rules
-
-Individual rules route specific URL patterns to a browser/profile.
-
-**Creating a Rule:**
-1. Go to **Settings** > **Manage Rules**
-2. Click **+ Add** > **Add Rule**
-3. Enter URL pattern (e.g., `github.com`)
-4. Select browser and profile
-5. Click **Save**
-
-**Rule Actions:**
-| Action | Description |
-|--------|-------------|
-| Edit | Modify pattern or profiles |
-| Delete | Remove the rule (with confirmation) |
-| Move to Group | Convert to a URL group pattern |
-| Enable/Disable | Toggle without deleting |
-
----
-
-### URL Groups
-
-URL Groups are collections of URL patterns that share the same browser/profile configuration.
-
-**Built-in Groups (disabled by default):**
-- **Microsoft 365** - outlook.office.com, teams.microsoft.com, sharepoint.com, etc.
-- **Google Suite** - mail.google.com, drive.google.com, docs.google.com, etc.
-
-**Creating a Custom Group:**
-1. Go to **Settings** > **Manage Rules** > **URL Groups** tab
-2. Click **+ Add** > **Add URL Group**
-3. Enter group name and description
-4. Add URL patterns
-5. Select browser/profile (or multiple for picker)
-6. Click **Save**
-
-**Group Pattern Actions:**
-| Action | Description |
-|--------|-------------|
-| Move to Rule | Convert pattern to individual rule |
-| Remove | Delete pattern from group (with confirmation) |
-| Restore | Restore deleted built-in patterns |
-
----
-
-### Multi-Profile Rules
-
-Rules and groups can have multiple browser/profile options.
-
-| Profile Count | Behavior |
-|---------------|----------|
-| 1 profile | Opens automatically |
-| 2+ profiles | Shows profile picker window |
-
-When the picker appears:
-- Click a profile to open the URL
-- Selection is remembered for future auto-selection (24-hour window)
-
----
-
-### Moving Patterns
-
-You can move URL patterns between individual rules and groups:
-
-**Move Group Pattern to Individual Rule:**
-1. Edit a URL Group
-2. Click the arrow icon next to a pattern
-3. Configure the individual rule settings
-4. Save - pattern is removed from group and added as rule
-
-**Move Individual Rule to Group:**
-1. In the Rules list, click the move icon on a rule
-2. Select the target group
-3. Optionally delete the original rule
-
-This allows flexible reorganization of your URL routing configuration.
-
----
-
-## Configuration
-
-### Settings
-
-| Setting | Description |
-|---------|-------------|
-| Rules Processing | Master toggle to enable/disable all rule processing |
-| Show Notifications | Toast notification when no rule matches, with option to create a rule |
-| Use Last Active Browser | Remember recently used browser/profile |
-| Clipboard Monitoring | Watch clipboard for URLs and route them through rules |
-| Minimize to Tray | Keep app running in system tray when window is closed |
-| Start with Windows | Launch LinkRouter automatically on Windows startup |
-
-### Data Storage
-
-All data is stored in `%APPDATA%\LinkRouter\`:
-
-```
-%APPDATA%\LinkRouter\
-+-- settings.json       # Application preferences
-+-- rules.json          # Individual URL rules
-+-- urlgroups.json      # URL groups
-+-- backups/            # Automatic rolling backups
-```
-
-**Backup & Restore:**
-- **Export**: Settings > Backup & Restore > Export
-- **Import**: Settings > Backup & Restore > Import (creates pre-import backup)
+Patterns are case-insensitive and match anywhere in the domain.
 
 ---
 
@@ -252,6 +324,7 @@ All data is stored in `%APPDATA%\LinkRouter\`:
 | `--startup` | Silent launch (for Windows startup) |
 
 **Examples:**
+
 ```bash
 LinkRouter.exe "https://github.com/user/repo"
 LinkRouter.exe --manage
@@ -262,44 +335,58 @@ LinkRouter.exe --register
 
 ## Troubleshooting
 
+### Check Your Status First
+
+Look at the status indicator in the bottom-left of Settings:
+- 🟢 **Active** — Everything is working
+- 🟠 **Not Default** — Set LinkRouter as your default browser
+
 ### LinkRouter doesn't appear in Default Apps
-1. Run `LinkRouter.exe --register`
-2. Restart Windows Explorer or sign out/in
 
-### URLs not being intercepted
-1. Verify LinkRouter is set as default browser in Windows Settings
-2. Check that Rules Processing is enabled (Settings page)
-3. Verify the rule pattern matches the URL
+1. Run `LinkRouter.exe --register` from command line
+2. Sign out of Windows and sign back in
+3. Try again in Windows Settings
 
-### Browser profiles not detected
-1. Close the browser completely
+### Clicking links doesn't use my rules
+
+1. Is the status showing "Active" (green)?
+2. Is "Enable Rules Processing" turned on?
+3. Is the specific rule enabled (blue toggle)?
+4. Does your pattern actually match the URL?
+
+### Browser profiles not showing
+
+1. Close the browser completely (check Task Manager)
 2. Restart LinkRouter
+3. Profiles should now appear
 
-### Rules not matching
-1. Check pattern format (lowercase, no wildcards)
-2. Verify rule is enabled
-3. Check priority order (rules > groups > default)
+### Pattern not matching
+
+- Patterns are case-insensitive
+- Patterns match anywhere in the domain
+- No wildcards needed — `sharepoint.com` matches all subdomains
 
 ### Logs
-Logs are written to: `D:\BrowserSelector\log.txt`
+
+Check `%APPDATA%\LinkRouter\` for `log.txt`
 
 ---
 
 ## Browser Support
 
-| Browser | Profile Support |
-|---------|-----------------|
-| Google Chrome | Full |
-| Microsoft Edge | Full |
-| Mozilla Firefox | Full |
-| Brave Browser | Full |
-| Opera | Full |
-| Opera GX | Full |
+| Browser | Profile Detection |
+|---------|-------------------|
+| Google Chrome | ✓ Full support |
+| Microsoft Edge | ✓ Full support |
+| Mozilla Firefox | ✓ Full support |
+| Brave Browser | ✓ Full support |
+| Opera | ✓ Full support |
+| Opera GX | ✓ Full support |
 
-Profiles are detected from standard browser data locations and include:
+Detected profile information includes:
 - Profile name
 - Account email (if signed in)
-- Profile path for launch arguments
+- Profile path
 
 ---
 
@@ -316,8 +403,8 @@ Profiles are detected from standard browser data locations and include:
 
 ## License
 
-MIT License - See [LICENSE](LICENSE) file for details.
+MIT License — See [LICENSE](LICENSE) file for details.
 
 ---
 
-**LinkRouter** - Smart URL routing for Windows
+**LinkRouter** — Smart URL routing for Windows
