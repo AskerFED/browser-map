@@ -425,6 +425,7 @@ namespace BrowserSelector.Pages
                 if (group != null)
                 {
                     group.IsEnabled = toggle.IsChecked ?? false;
+                    group.HasBeenConfigured = true;  // User explicitly toggled this group
 
                     // Auto-assign first browser profile when enabling a group with no profiles
                     if (group.IsEnabled && !HasProfilesConfigured(group))

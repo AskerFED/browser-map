@@ -573,6 +573,7 @@ namespace BrowserSelector
             _group.ModifiedDate = DateTime.Now;
             _group.Profiles = profiles;
             _group.ClipboardNotificationsEnabled = ClipboardNotifyToggle.IsChecked == true;
+            _group.HasBeenConfigured = true;  // Mark as user-configured
 
             // Set behavior based on profile count
             if (profiles.Count > 1)

@@ -387,15 +387,20 @@ namespace BrowserSelector
         /// <summary>
         /// Checks if a disabled URL group would have matched the given URL.
         /// Used to suppress "Create Rule" notifications when a group exists but is disabled.
+        /// Only returns true if the user has explicitly configured the group (HasBeenConfigured=true).
+        /// This allows fresh installs to show notifications for built-in groups that are disabled by default.
         /// </summary>
         public static bool HasDisabledMatchingGroup(string url)
         {
-            var disabledGroups = LoadGroups().Where(g => !g.IsEnabled).ToList();
+            // Only suppress notifications for groups the user has explicitly configured
+            var disabledConfiguredGroups = LoadGroups()
+                .Where(g => !g.IsEnabled && g.HasBeenConfigured)
+                .ToList();
 
-            if (disabledGroups.Count == 0)
+            if (disabledConfiguredGroups.Count == 0)
                 return false;
 
-            foreach (var group in disabledGroups)
+            foreach (var group in disabledConfiguredGroups)
             {
                 if (MatchesGroupPatterns(url, group.UrlPatterns))
                     return true;

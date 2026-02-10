@@ -73,6 +73,14 @@ namespace BrowserSelector
         public bool IsEnabled { get; set; } = true;
 
         /// <summary>
+        /// Tracks whether the user has ever configured this group.
+        /// Used to distinguish "never touched" built-in groups from "explicitly disabled" groups.
+        /// Fresh installs have built-in groups disabled by default with HasBeenConfigured=false,
+        /// so notifications will still be shown for matching URLs.
+        /// </summary>
+        public bool HasBeenConfigured { get; set; } = false;
+
+        /// <summary>
         /// Whether clipboard monitoring shows notifications for URLs matching this group.
         /// Default is true for new groups.
         /// </summary>
