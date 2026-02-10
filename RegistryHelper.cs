@@ -155,7 +155,33 @@ namespace BrowserSelector
             }
         }
 
-        private static void RemoveFromStartup()
+        /// <summary>
+        /// Adds the application to Windows startup (public method for clipboard monitoring)
+        /// </summary>
+        public static void AddToStartup()
+        {
+            try
+            {
+                var exePath = Assembly.GetExecutingAssembly().Location.Replace(".dll", ".exe");
+                using (var key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run", true))
+                {
+                    if (key != null)
+                    {
+                        key.SetValue(AppName, $"\"{exePath}\" --startup");
+                        Logger.Log("Added to startup");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log($"AddToStartup error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Removes the application from Windows startup
+        /// </summary>
+        public static void RemoveFromStartup()
         {
             try
             {
@@ -164,12 +190,31 @@ namespace BrowserSelector
                     if (key != null)
                     {
                         key.DeleteValue(AppName, false);
+                        Logger.Log("Removed from startup");
                     }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log($"RemoveFromStartup error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Checks if the application is registered in Windows startup
+        /// </summary>
+        public static bool IsInStartup()
+        {
+            try
+            {
+                using (var key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run"))
+                {
+                    return key?.GetValue(AppName) != null;
                 }
             }
             catch
             {
-                // Ignore errors
+                return false;
             }
         }
 

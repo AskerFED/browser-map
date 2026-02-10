@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using System.Text.Json;
+using BrowserSelector.Models;
 using BrowserSelector.Services;
 
 namespace BrowserSelector
@@ -71,6 +72,11 @@ namespace BrowserSelector
         /// Used to determine if template updates need to be applied on app startup.
         /// </summary>
         public string InstalledTemplateVersion { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Settings for clipboard URL monitoring feature.
+        /// </summary>
+        public ClipboardSettings ClipboardMonitoring { get; set; } = new();
     }
 
     public static class SettingsManager

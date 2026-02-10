@@ -39,7 +39,7 @@
 
                 <!-- App Header -->
                 <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="20,24,20,20">
-                    <Image Source="pack://application:,,,/app.ico"
+                    <Image Source="pack://application:,,,/Assets/Icons/app.ico"
                            Width="32" Height="32"
                            RenderOptions.BitmapScalingMode="HighQuality"/>
                     <TextBlock Text="LinkRouter"

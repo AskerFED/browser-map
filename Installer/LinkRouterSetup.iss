@@ -27,7 +27,7 @@ DisableProgramGroupPage=yes
 ; Output settings
 OutputDir=..\bin\Installer
 OutputBaseFilename=LinkRouterSetup-{#MyAppVersion}
-SetupIconFile=..\app.ico
+SetupIconFile=..\Assets\Icons\app.ico
 UninstallDisplayIcon={app}\{#MyAppExeName}
 UninstallDisplayName={#MyAppName}
 

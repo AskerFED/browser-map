@@ -82,6 +82,9 @@ namespace BrowserSelector
                 GroupNameTextBox.Text = _group.Name;
                 DescriptionTextBox.Text = _group.Description;
 
+                // Load clipboard notification setting
+                ClipboardNotifyToggle.IsChecked = _group.ClipboardNotificationsEnabled;
+
                 // Load profiles into the selector
                 LoadExistingProfiles();
             }
@@ -484,6 +487,7 @@ namespace BrowserSelector
             _group.UrlPatterns = _patterns.ToList();
             _group.ModifiedDate = DateTime.Now;
             _group.Profiles = profiles;
+            _group.ClipboardNotificationsEnabled = ClipboardNotifyToggle.IsChecked == true;
 
             // Set behavior based on profile count
             if (profiles.Count > 1)

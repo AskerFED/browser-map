@@ -112,6 +112,20 @@
                          AcceptsReturn="True"
                          VerticalContentAlignment="Top"/>
             </StackPanel>
+
+            <!-- Clipboard Notification Toggle -->
+            <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                <ToggleButton x:Name="ClipboardNotifyToggle"
+                              IsChecked="True"
+                              Style="{StaticResource ToggleSwitchStyle}"/>
+                <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
+                    <TextBlock Text="Clipboard notification"
+                               Style="{StaticResource BodyTextStyle}"/>
+                    <TextBlock Text="Show notification when URLs from this group are copied"
+                               Style="{StaticResource CaptionTextStyle}"
+                               Foreground="#666"/>
+                </StackPanel>
+            </StackPanel>
         </StackPanel>
 
         <!-- TabControl -->

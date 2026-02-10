@@ -66,6 +66,9 @@ namespace BrowserSelector
                 // Legacy single profile - load from legacy fields
                 ProfileSelector.LoadSingleProfile(existingRule.BrowserPath, existingRule.ProfilePath);
             }
+
+            // Load clipboard notification setting
+            ClipboardNotifyToggle.IsChecked = existingRule.ClipboardNotificationsEnabled;
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
@@ -110,6 +113,7 @@ namespace BrowserSelector
                 // Update existing rule
                 _existingRule.Pattern = normalizedPattern;
                 _existingRule.Profiles = profiles;
+                _existingRule.ClipboardNotificationsEnabled = ClipboardNotifyToggle.IsChecked == true;
 
                 // Update legacy fields from first profile for compatibility
                 if (profiles.Count > 0)
@@ -141,7 +145,8 @@ namespace BrowserSelector
                 var rule = new UrlRule
                 {
                     Pattern = normalizedPattern,
-                    Profiles = profiles
+                    Profiles = profiles,
+                    ClipboardNotificationsEnabled = ClipboardNotifyToggle.IsChecked == true
                 };
 
                 // Set legacy fields from first profile for compatibility

@@ -73,6 +73,12 @@ namespace BrowserSelector
         public bool IsEnabled { get; set; } = true;
 
         /// <summary>
+        /// Whether clipboard monitoring shows notifications for URLs matching this group.
+        /// Default is true for new groups.
+        /// </summary>
+        public bool ClipboardNotificationsEnabled { get; set; } = true;
+
+        /// <summary>
         /// URL patterns with metadata (new format)
         /// </summary>
         public List<UrlPattern> UrlPatterns { get; set; } = new List<UrlPattern>();

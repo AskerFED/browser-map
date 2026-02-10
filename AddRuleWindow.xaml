@@ -38,6 +38,20 @@
                     <TextBlock Text="Enter domain or partial URL (e.g., github.com, google, localhost)"
                                Style="{StaticResource CaptionTextStyle}"
                                Margin="0,6,0,0"/>
+
+                    <!-- Clipboard Notification Toggle -->
+                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                        <ToggleButton x:Name="ClipboardNotifyToggle"
+                                      IsChecked="True"
+                                      Style="{StaticResource ToggleSwitchStyle}"/>
+                        <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="Clipboard notification"
+                                       Style="{StaticResource BodyTextStyle}"/>
+                            <TextBlock Text="Show notification when this URL is copied"
+                                       Style="{StaticResource CaptionTextStyle}"
+                                       Foreground="#666"/>
+                        </StackPanel>
+                    </StackPanel>
                 </StackPanel>
 
                 <!-- Browser/Profile Selection (reusable component) -->

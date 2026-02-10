@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using BrowserSelector.Services;
@@ -25,6 +26,7 @@ namespace BrowserSelector.Pages
         public void LoadData()
         {
             InitializeRulesToggle();
+            InitializeClipboardMonitoringSettings();
             UpdateRegistrationStatus();
         }
 
@@ -230,6 +232,82 @@ namespace BrowserSelector.Pages
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        #region Clipboard Monitoring
+
+        private void InitializeClipboardMonitoringSettings()
+        {
+            try
+            {
+                var settings = SettingsManager.LoadSettings().ClipboardMonitoring;
+                var serviceRunning = ClipboardMonitorService.Instance.IsRunning;
+
+                // Determine actual state from settings
+                bool shouldBeEnabled = settings.IsEnabled;
+
+                // Set toggle state without triggering events
+                ClipboardMonitoringToggle.Checked -= ClipboardMonitoringToggle_Changed;
+                ClipboardMonitoringToggle.Unchecked -= ClipboardMonitoringToggle_Changed;
+                ClipboardMonitoringToggle.IsChecked = shouldBeEnabled;
+                ClipboardMonitoringToggle.Checked += ClipboardMonitoringToggle_Changed;
+                ClipboardMonitoringToggle.Unchecked += ClipboardMonitoringToggle_Changed;
+
+                // CRITICAL: If settings say enabled but service isn't running, start it now
+                // This fixes desync after app crash/restart
+                if (shouldBeEnabled && !serviceRunning)
+                {
+                    Logger.Log("InitializeClipboardMonitoringSettings: Service not running but should be - starting now");
+                    ClipboardMonitorService.Instance.Start();
+                    TrayIconService.Instance.Show();
+                    TrayIconService.Instance.UpdateState();
+                }
+
+                Logger.Log($"InitializeClipboardMonitoringSettings: Toggle={shouldBeEnabled}, ServiceRunning={serviceRunning}");
+            }
+            catch (Exception ex)
+            {
+                Logger.Log($"InitializeClipboardMonitoringSettings ERROR: {ex.Message}");
+            }
+        }
+
+        private void ClipboardMonitoringToggle_Changed(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var isEnabled = ClipboardMonitoringToggle.IsChecked == true;
+
+                var settings = SettingsManager.LoadSettings();
+                settings.ClipboardMonitoring.IsEnabled = isEnabled;
+                SettingsManager.SaveSettings(settings);
+
+                // Start or stop the clipboard monitor service
+                if (isEnabled)
+                {
+                    ClipboardMonitorService.Instance.Start();
+                    TrayIconService.Instance.Show();
+                    TrayIconService.Instance.UpdateState();
+
+                    // Register in Windows startup apps
+                    RegistryHelper.AddToStartup();
+                }
+                else
+                {
+                    ClipboardMonitorService.Instance.Stop();
+                    TrayIconService.Instance.Hide();
+
+                    // Remove from Windows startup apps
+                    RegistryHelper.RemoveFromStartup();
+                }
+
+                Logger.Log($"Clipboard monitoring {(isEnabled ? "enabled" : "disabled")}");
+            }
+            catch (Exception ex)
+            {
+                Logger.Log($"ClipboardMonitoringToggle_Changed ERROR: {ex.Message}");
+            }
+        }
+
+        #endregion
 
         /* Profile Auto-Detection region disabled
         #region Profile Auto-Detection

@@ -119,6 +119,44 @@
                 </Grid>
             </Border>
 
+            <!-- Clipboard Monitoring Section -->
+            <TextBlock Text="Clipboard Monitoring"
+                       Style="{StaticResource SectionHeaderStyle}"/>
+
+            <!-- Enable Clipboard Monitoring -->
+            <Border Style="{StaticResource SettingsCardStyle}" Padding="16" Margin="0,0,0,16">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" Width="36" Height="36" Background="#E8F5E9" CornerRadius="4" Margin="0,0,16,0">
+                        <TextBlock Text="&#xE8C8;"
+                                   FontFamily="{StaticResource SegoeFluentIcons}"
+                                   FontSize="18"
+                                   Foreground="#2E7D32"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                    </Border>
+
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock Text="Enable Clipboard Monitoring" Style="{StaticResource BodyStrongTextStyle}"/>
+                        <TextBlock Text="Show notifications when URLs matching your rules are copied"
+                                   Style="{StaticResource CaptionTextStyle}"
+                                   Margin="0,2,0,0"/>
+                    </StackPanel>
+
+                    <ToggleButton x:Name="ClipboardMonitoringToggle"
+                                  Grid.Column="2"
+                                  Style="{StaticResource ToggleSwitchStyle}"
+                                  VerticalAlignment="Center"
+                                  Checked="ClipboardMonitoringToggle_Changed"
+                                  Unchecked="ClipboardMonitoringToggle_Changed"/>
+                </Grid>
+            </Border>
+
             <!-- Backup & Restore Section -->
             <TextBlock Text="Backup &amp; Restore"
                        Style="{StaticResource SectionHeaderStyle}"/>

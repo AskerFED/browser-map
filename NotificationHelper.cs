@@ -6,6 +6,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using BrowserSelector.Services;
 
 namespace BrowserSelector
 {
@@ -74,14 +75,14 @@ namespace BrowserSelector
                     settingsWindow.Closed += (s, args) =>
                     {
                         Logger.Log("SettingsWindow closed (from notification)");
-                        Application.Current.Shutdown();
+                        AppLifecycleService.ShutdownOrStayInBackground("Rule created - settings closed");
                     };
                     settingsWindow.Show();
                 }
                 else
                 {
-                    // User cancelled - shutdown the app
-                    Application.Current.Shutdown();
+                    // User cancelled
+                    AppLifecycleService.ShutdownOrStayInBackground("Rule creation cancelled");
                 }
             }
             catch (Exception ex)
@@ -209,7 +210,15 @@ namespace BrowserSelector
                 };
                 try
                 {
-                    appIcon.Source = new BitmapImage(new Uri("pack://application:,,,/app.ico", UriKind.Absolute));
+                    // Use PNG for sharper display (ICO may pick wrong resolution)
+                    var bitmap = new BitmapImage();
+                    bitmap.BeginInit();
+                    bitmap.UriSource = new Uri("pack://application:,,,/Assets/Icons/favicon-32x32.png", UriKind.Absolute);
+                    bitmap.DecodePixelWidth = 32;
+                    bitmap.DecodePixelHeight = 32;
+                    bitmap.EndInit();
+                    appIcon.Source = bitmap;
+                    RenderOptions.SetBitmapScalingMode(appIcon, BitmapScalingMode.HighQuality);
                 }
                 catch { /* Ignore icon loading errors */ }
                 Grid.SetColumn(appIcon, 0);
@@ -497,9 +506,9 @@ namespace BrowserSelector
                 BeginAnimation(LeftProperty, slideOut);
                 BeginAnimation(OpacityProperty, fadeOut);
             }
-            private void CloseAction() { 
+            private void CloseAction() {
                 Close();
-               if(!ruleWindowOpen) Application.Current.Shutdown();
+                if (!ruleWindowOpen) AppLifecycleService.ShutdownOrStayInBackground("Notification closed");
             }
         }
     }

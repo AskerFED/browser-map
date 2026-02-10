@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using BrowserSelector.Services;
 
 namespace BrowserSelector
 {
@@ -156,8 +157,8 @@ namespace BrowserSelector
             Logger.Log($"Individual rule match complete -> Opening {browser.Name} | {profile?.Name}");
 
             OpenBrowser(browser, profile);
-            Logger.Log("Calling Application.Shutdown()");
-            Application.Current.Shutdown();
+            Logger.Log("URL processed - calling shutdown");
+            AppLifecycleService.ShutdownOrStayInBackground("Individual rule match processed");
         }
 
         private void ShowRuleProfilePicker(UrlRule rule)
@@ -167,8 +168,8 @@ namespace BrowserSelector
             var pickerWindow = new RuleProfilePickerWindow(_url, rule);
             Logger.Log("Showing RuleProfilePickerWindow dialog...");
             pickerWindow.ShowDialog();
-            Logger.Log("RuleProfilePickerWindow closed - shutting down");
-            Application.Current.Shutdown();
+            Logger.Log("RuleProfilePickerWindow closed");
+            AppLifecycleService.ShutdownOrStayInBackground("Rule profile picker closed");
         }
 
         private void ShowGroupProfilePicker(UrlGroup group)
@@ -178,8 +179,8 @@ namespace BrowserSelector
             var pickerWindow = new RuleProfilePickerWindow(_url, group);
             Logger.Log("Showing RuleProfilePickerWindow dialog (group mode)...");
             pickerWindow.ShowDialog();
-            Logger.Log("RuleProfilePickerWindow closed - shutting down");
-            Application.Current.Shutdown();
+            Logger.Log("RuleProfilePickerWindow closed");
+            AppLifecycleService.ShutdownOrStayInBackground("Group profile picker closed");
         }
 
         private void HandleGroupMatch(MatchResult match, bool isOverride)
@@ -245,8 +246,8 @@ namespace BrowserSelector
             Logger.Log($"URL group match complete -> Opening {browser.Name} | {profile?.Name}");
 
             OpenBrowser(browser, profile);
-            Logger.Log("Calling Application.Shutdown()");
-            Application.Current.Shutdown();
+            Logger.Log("URL processed - calling shutdown");
+            AppLifecycleService.ShutdownOrStayInBackground("URL group match processed");
         }
 
         private void HandleNoMatch(bool skipNotification = false)
@@ -285,8 +286,8 @@ namespace BrowserSelector
                 else
                 {
                     // No notification - just shutdown
-                    Logger.Log(skipNotification ? "Skipping notification (rules disabled) - shutting down" : "Notifications disabled - shutting down");
-                    Application.Current.Shutdown();
+                    Logger.Log(skipNotification ? "Skipping notification (rules disabled)" : "Notifications disabled");
+                    AppLifecycleService.ShutdownOrStayInBackground("No match - opened in default browser");
                 }
             }
             else
@@ -386,8 +387,8 @@ namespace BrowserSelector
 
                 Logger.Log("Opening browser from user selection...");
                 OpenBrowser(browser, profile);
-                Logger.Log("Calling Application.Shutdown()");
-                Application.Current.Shutdown();
+                Logger.Log("URL processed - calling shutdown");
+                AppLifecycleService.ShutdownOrStayInBackground("User selected browser and profile");
             }
             else
             {
@@ -506,8 +507,8 @@ namespace BrowserSelector
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            Logger.Log("CancelButton_Click - user cancelled - shutting down");
-            Application.Current.Shutdown();
+            Logger.Log("CancelButton_Click - user cancelled");
+            AppLifecycleService.ShutdownOrStayInBackground("User cancelled browser selection");
         }
     }
 }

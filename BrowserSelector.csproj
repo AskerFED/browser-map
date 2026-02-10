@@ -5,6 +5,7 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
 
     <!-- Application Info -->
     <AssemblyName>LinkRouter</AssemblyName>
@@ -28,7 +29,7 @@
     <DebugType>embedded</DebugType>
 
     <!-- 👇 Embed the icon -->
-    <ApplicationIcon>app.ico</ApplicationIcon>
+    <ApplicationIcon>Assets\Icons\app.ico</ApplicationIcon>
 
     <!-- Optional: remove console window if it appears -->
     <OutputType>WinExe</OutputType>
@@ -40,7 +41,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="app.ico" />
+    <Resource Include="Assets\Icons\app.ico" />
+    <Resource Include="Assets\Icons\favicon-32x32.png" />
   </ItemGroup>
 
   <ItemGroup>

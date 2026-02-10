@@ -53,6 +53,12 @@ namespace BrowserSelector
         public bool IsEnabled { get; set; } = true;
 
         /// <summary>
+        /// Whether clipboard monitoring shows notifications for URLs matching this rule.
+        /// Default is true for new rules.
+        /// </summary>
+        public bool ClipboardNotificationsEnabled { get; set; } = true;
+
+        /// <summary>
         /// List of browser/profile combinations for this rule.
         /// If count is 1, auto-opens. If count > 1, shows picker.
         /// </summary>
@@ -342,6 +348,20 @@ namespace BrowserSelector
         public UrlRule? Rule { get; set; }
         public UrlGroup? Group { get; set; }
         public UrlGroupOverride? Override { get; set; }
+
+        /// <summary>
+        /// Gets the name of the matched rule or group
+        /// </summary>
+        public string GetRuleName()
+        {
+            return Type switch
+            {
+                MatchType.IndividualRule => Rule?.Pattern ?? string.Empty,
+                MatchType.GroupOverride => Override?.UrlPattern ?? Group?.Name ?? string.Empty,
+                MatchType.UrlGroup => Group?.Name ?? string.Empty,
+                _ => string.Empty
+            };
+        }
 
         /// <summary>
         /// Gets the effective browser name based on match type
