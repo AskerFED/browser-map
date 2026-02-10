@@ -3,127 +3,337 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LinkRouter - Smart URL Routing for Windows</title>
-    <meta name="description" content="Route links to the right browser and profile. Open-source Windows app for intelligent URL routing.">
+
+    <!-- Primary Meta Tags -->
+    <title>LinkRouter - Smart URL Routing for Windows | Route Links to the Right Browser</title>
+    <meta name="title" content="LinkRouter - Smart URL Routing for Windows">
+    <meta name="description" content="Free, open-source Windows app that intelligently routes URLs to the right browser and profile. Works with Chrome, Edge, Firefox, Brave, and Opera. Stop switching browsers manually.">
+    <meta name="keywords" content="browser selector, URL router, Windows browser manager, multi-browser, browser profiles, Chrome profiles, Edge profiles, link router, browser switcher">
+    <meta name="author" content="AskerFED">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://askerfed.github.io/link-router/">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://askerfed.github.io/link-router/">
+    <meta property="og:title" content="LinkRouter - Smart URL Routing for Windows">
+    <meta property="og:description" content="Free, open-source Windows app that intelligently routes URLs to the right browser and profile. Works with Chrome, Edge, Firefox, Brave, and Opera.">
+    <meta property="og:image" content="https://askerfed.github.io/link-router/assets/og-image.png">
+    <meta property="og:site_name" content="LinkRouter">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://askerfed.github.io/link-router/">
+    <meta name="twitter:title" content="LinkRouter - Smart URL Routing for Windows">
+    <meta name="twitter:description" content="Free, open-source Windows app that intelligently routes URLs to the right browser and profile. Works with Chrome, Edge, Firefox, Brave, and Opera.">
+    <meta name="twitter:image" content="https://askerfed.github.io/link-router/assets/og-image.png">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "LinkRouter",
+        "operatingSystem": "Windows 10, Windows 11",
+        "applicationCategory": "UtilitiesApplication",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "description": "A Windows app that intelligently routes URLs to the right browser and profile based on your rules.",
+        "downloadUrl": "https://github.com/AskerFED/link-router/releases/download/v1.0/LinkRouter.exe",
+        "softwareVersion": "1.0",
+        "author": {
+            "@type": "Person",
+            "name": "AskerFED"
+        },
+        "license": "https://opensource.org/licenses/MIT"
+    }
+    </script>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/icon.png">
+    <link rel="apple-touch-icon" href="assets/icon.png">
+
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="image/png" href="assets/icon.png">
 </head>
 <body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="/" class="nav-brand">
+                <svg class="nav-logo" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>LinkRouter</span>
+            </a>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#how-it-works">How it works</a>
+                <a href="https://github.com/AskerFED/link-router" target="_blank" rel="noopener" class="nav-github">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                    GitHub
+                </a>
+                <a href="https://github.com/AskerFED/link-router/releases/download/v1.0/LinkRouter.exe" class="btn btn-nav">Download</a>
+            </div>
+            <button class="nav-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
     <header class="hero">
-        <div class="container">
+        <div class="hero-bg"></div>
+        <div class="container hero-container">
             <div class="hero-content">
-                <h1>LinkRouter</h1>
-                <p class="tagline">Route links to the right browser and profile</p>
-                <p class="description">
-                    A Windows app that intelligently routes URLs from Teams, Outlook, Slack, and other apps
-                    to the correct browser and profile based on your rules.
+                <span class="badge">Free & Open Source</span>
+                <h1>Route links to the<br><span class="gradient-text">right browser</span></h1>
+                <p class="hero-description">
+                    Stop switching browsers manually. LinkRouter automatically opens URLs in the correct browser
+                    and profile based on your rules. Perfect for work, personal, and dev workflows.
                 </p>
-                <div class="cta-buttons">
-                    <a href="https://github.com/AskerFED/link-router/releases/latest" class="btn btn-primary">
+                <div class="hero-cta">
+                    <a href="https://github.com/AskerFED/link-router/releases/download/v1.0/LinkRouter.exe" class="btn btn-primary btn-large">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
                         Download for Windows
                     </a>
-                    <a href="https://github.com/AskerFED/link-router" class="btn btn-secondary">
+                    <a href="https://github.com/AskerFED/link-router" target="_blank" rel="noopener" class="btn btn-secondary btn-large">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
                         View on GitHub
                     </a>
                 </div>
-                <p class="requirements">Windows 10/11 (64-bit) &bull; Free &amp; Open Source</p>
+                <p class="hero-meta">Windows 10/11 (64-bit) &bull; v1.0 &bull; MIT License</p>
+            </div>
+            <div class="hero-visual">
+                <div class="browser-orbit">
+                    <div class="orbit-item orbit-1" title="Chrome">
+                        <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#4285F4"/><circle cx="24" cy="24" r="9" fill="#fff"/><circle cx="24" cy="24" r="4" fill="#4285F4"/><path d="M24 15c4.97 0 9 4.03 9 9h9c0-9.94-8.06-18-18-18v9z" fill="#EA4335"/><path d="M15 24c0-4.97 4.03-9 9-9V6C14.06 6 6 14.06 6 24h9z" fill="#34A853"/><path d="M24 33c-4.97 0-9-4.03-9-9H6c0 9.94 8.06 18 18 18v-9z" fill="#FBBC05"/></svg>
+                    </div>
+                    <div class="orbit-item orbit-2" title="Edge">
+                        <svg viewBox="0 0 48 48"><path d="M24 4C12.95 4 4 12.95 4 24s8.95 20 20 20c9.93 0 18.21-7.24 19.77-16.72.15-.92-.68-1.7-1.58-1.43-2.02.6-4.19.9-6.44.9-11.05 0-20-8.95-20-20 0-1.1.09-2.18.27-3.23.14-.82-.5-1.55-1.33-1.48-.89.07-1.78.17-2.69.29z" fill="#0078D4"/><circle cx="32" cy="18" r="8" fill="#50E6FF"/></svg>
+                    </div>
+                    <div class="orbit-item orbit-3" title="Firefox">
+                        <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" fill="#FF6611"/><path d="M24 8c-8.84 0-16 7.16-16 16s7.16 16 16 16 16-7.16 16-16c0-2.21-.45-4.31-1.26-6.22-.5.89-1.24 1.72-2.24 2.22 1 2.5 1 5.28-.5 7.5-2 3-6 4-9 2.5-2.5-1.25-3.5-4.25-2.5-6.75.75-1.88 2.5-3.13 4.5-3.25-1-.75-2.25-1.25-3.5-1.25-3.31 0-6 2.69-6 6s2.69 6 6 6c2.21 0 4.14-1.2 5.18-2.98.32.65.82 1.23 1.45 1.68C29.76 36.59 27.01 38 24 38c-7.73 0-14-6.27-14-14s6.27-14 14-14c3.87 0 7.37 1.57 9.9 4.1-.3-.03-.6-.05-.9-.05-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 .74-.4 1.39-1 1.73v.02c2.86.84 5.22 2.82 6.53 5.43.31-1.04.47-2.14.47-3.28 0-8.84-7.16-16-16-16z" fill="#FFBD4F"/></svg>
+                    </div>
+                    <div class="orbit-item orbit-4" title="Brave">
+                        <svg viewBox="0 0 48 48"><path d="M24 4L8 12v8c0 11.05 6.84 21.37 16 25 9.16-3.63 16-13.95 16-25v-8L24 4z" fill="#FB542B"/><path d="M24 8l-12 6v6c0 8.84 5.47 17.1 12 20 6.53-2.9 12-11.16 12-20v-6L24 8z" fill="#fff"/><path d="M24 14l-6 3v3c0 4.42 2.73 8.55 6 10 3.27-1.45 6-5.58 6-10v-3l-6-3z" fill="#FB542B"/></svg>
+                    </div>
+                    <div class="orbit-item orbit-5" title="Opera">
+                        <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" fill="#FF1B2D"/><ellipse cx="24" cy="24" rx="8" ry="14" fill="#fff"/></svg>
+                    </div>
+                    <div class="orbit-center">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M12 2L2 7L12 12L22 7L12 2Z"/>
+                            <path d="M2 17L12 22L22 17"/>
+                            <path d="M2 12L12 17L22 12"/>
+                        </svg>
+                    </div>
+                </div>
             </div>
         </div>
     </header>
 
-    <section class="features">
+    <!-- Browser Support -->
+    <section class="browsers">
         <div class="container">
-            <h2>Features</h2>
-            <div class="feature-grid">
-                <div class="feature">
-                    <div class="feature-icon">&#127760;</div>
-                    <h3>Multi-Browser Support</h3>
-                    <p>Works with Chrome, Edge, Firefox, Brave, Opera, and Opera GX with full profile support.</p>
+            <p class="browsers-label">Works with all major browsers</p>
+            <div class="browser-logos">
+                <div class="browser-logo" title="Google Chrome">
+                    <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#4285F4"/><circle cx="24" cy="24" r="9" fill="#fff"/><circle cx="24" cy="24" r="4" fill="#4285F4"/><path d="M24 15c4.97 0 9 4.03 9 9h9c0-9.94-8.06-18-18-18v9z" fill="#EA4335"/><path d="M15 24c0-4.97 4.03-9 9-9V6C14.06 6 6 14.06 6 24h9z" fill="#34A853"/><path d="M24 33c-4.97 0-9-4.03-9-9H6c0 9.94 8.06 18 18 18v-9z" fill="#FBBC05"/></svg>
+                    <span>Chrome</span>
                 </div>
-                <div class="feature">
-                    <div class="feature-icon">&#128100;</div>
-                    <h3>Profile Aware</h3>
-                    <p>Automatically detects all your browser profiles (personal, work, dev) and routes accordingly.</p>
+                <div class="browser-logo" title="Microsoft Edge">
+                    <svg viewBox="0 0 48 48"><path d="M44 24c0 11.05-8.95 20-20 20S4 35.05 4 24 12.95 4 24 4s20 8.95 20 20z" fill="#0078D4"/><path d="M24 8c-8.84 0-16 7.16-16 16 0 4.42 1.79 8.42 4.69 11.31C15.58 32.42 19.58 30 24 30c6.63 0 12 5.37 12 12 0 .69-.06 1.37-.17 2.03C41.21 40.12 44 32.47 44 24c0-11.05-8.95-20-20-20z" fill="#50E6FF"/></svg>
+                    <span>Edge</span>
                 </div>
-                <div class="feature">
-                    <div class="feature-icon">&#128230;</div>
-                    <h3>URL Groups</h3>
-                    <p>Group related domains together. Built-in templates for Microsoft 365 and Google Workspace.</p>
+                <div class="browser-logo" title="Mozilla Firefox">
+                    <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#FF6611"/><circle cx="24" cy="24" r="14" fill="#FFBD4F"/><circle cx="24" cy="24" r="8" fill="#FF6611"/></svg>
+                    <span>Firefox</span>
                 </div>
-                <div class="feature">
-                    <div class="feature-icon">&#128203;</div>
-                    <h3>Clipboard Monitoring</h3>
-                    <p>Optionally monitor clipboard for URLs and route them with a single click.</p>
+                <div class="browser-logo" title="Brave Browser">
+                    <svg viewBox="0 0 48 48"><path d="M24 4L8 12v8c0 11.05 6.84 21.37 16 25 9.16-3.63 16-13.95 16-25v-8L24 4z" fill="#FB542B"/><path d="M24 12l-8 4v4c0 5.89 3.65 11.39 8 13.33 4.35-1.94 8-7.44 8-13.33v-4l-8-4z" fill="#fff"/></svg>
+                    <span>Brave</span>
                 </div>
-                <div class="feature">
-                    <div class="feature-icon">&#128276;</div>
-                    <h3>Smart Notifications</h3>
-                    <p>Toast notifications let you quickly create rules for new domains.</p>
-                </div>
-                <div class="feature">
-                    <div class="feature-icon">&#128190;</div>
-                    <h3>Backup & Restore</h3>
-                    <p>Export and import your configuration. Automatic rolling backups keep your data safe.</p>
+                <div class="browser-logo" title="Opera">
+                    <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#FF1B2D"/><ellipse cx="24" cy="24" rx="8" ry="14" fill="#fff"/></svg>
+                    <span>Opera</span>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="how-it-works">
+    <!-- Features Section -->
+    <section id="features" class="features">
         <div class="container">
-            <h2>How It Works</h2>
+            <div class="section-header">
+                <h2>Everything you need for browser management</h2>
+                <p>Powerful features designed for power users with multiple browsers and profiles</p>
+            </div>
+            <div class="feature-grid">
+                <article class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+                    </div>
+                    <h3>Profile-Aware Routing</h3>
+                    <p>Automatically detects all your browser profiles (personal, work, dev) and routes URLs to the right one.</p>
+                </article>
+                <article class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    </div>
+                    <h3>URL Groups</h3>
+                    <p>Group related domains together. Built-in templates for Microsoft 365 and Google Workspace included.</p>
+                </article>
+                <article class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                    </div>
+                    <h3>Clipboard Monitoring</h3>
+                    <p>Optionally watch your clipboard for URLs and route them with a single click from the system tray.</p>
+                </article>
+                <article class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+                    </div>
+                    <h3>Smart Notifications</h3>
+                    <p>Toast notifications let you quickly create rules for new domains when no match is found.</p>
+                </article>
+                <article class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    </div>
+                    <h3>Multi-Profile Picker</h3>
+                    <p>When a rule has multiple profiles, a picker appears letting you choose where to open the link.</p>
+                </article>
+                <article class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    </div>
+                    <h3>Backup & Restore</h3>
+                    <p>Export and import your configuration. Automatic rolling backups keep your data safe.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <h2>Get started in 3 simple steps</h2>
+                <p>Set up once, and LinkRouter handles the rest automatically</p>
+            </div>
             <div class="steps">
                 <div class="step">
                     <div class="step-number">1</div>
-                    <h3>Install & Set as Default</h3>
-                    <p>Install LinkRouter and set it as your default browser in Windows Settings.</p>
+                    <div class="step-content">
+                        <h3>Install & Register</h3>
+                        <p>Download LinkRouter and set it as your default browser in Windows Settings.</p>
+                    </div>
                 </div>
+                <div class="step-connector"></div>
                 <div class="step">
                     <div class="step-number">2</div>
-                    <h3>Create Rules</h3>
-                    <p>Add rules for domains you want to route to specific browsers and profiles.</p>
+                    <div class="step-content">
+                        <h3>Create Rules</h3>
+                        <p>Add rules for domains you want routed to specific browsers and profiles.</p>
+                    </div>
                 </div>
+                <div class="step-connector"></div>
                 <div class="step">
                     <div class="step-number">3</div>
-                    <h3>Click Links</h3>
-                    <p>Links from any app are automatically routed to the right browser.</p>
+                    <div class="step-content">
+                        <h3>Click Links</h3>
+                        <p>Links from Teams, Outlook, Slack, and any app are automatically routed.</p>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="download">
+    <!-- Download Section -->
+    <section id="download" class="download">
         <div class="container">
-            <h2>Download</h2>
-            <div class="download-options">
-                <div class="download-option">
-                    <h3>Installer (Recommended)</h3>
-                    <p>Full installation with Start Menu shortcuts and easy updates.</p>
-                    <a href="https://github.com/AskerFED/link-router/releases/latest/download/LinkRouterSetup-1.0.0.exe" class="btn btn-primary">
-                        Download Installer
-                    </a>
+            <div class="download-card">
+                <div class="download-content">
+                    <h2>Ready to streamline your workflow?</h2>
+                    <p>Download LinkRouter and stop switching browsers manually. It's free, open-source, and takes less than a minute to set up.</p>
+                    <div class="download-info">
+                        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> Windows 10/11</span>
+                        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> ~156 MB</span>
+                        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> MIT License</span>
+                    </div>
                 </div>
-                <div class="download-option">
-                    <h3>Portable</h3>
-                    <p>Single executable. Run from anywhere, data stored in %APPDATA%.</p>
-                    <a href="https://github.com/AskerFED/link-router/releases/latest" class="btn btn-secondary">
-                        View Releases
+                <div class="download-action">
+                    <a href="https://github.com/AskerFED/link-router/releases/download/v1.0/LinkRouter.exe" class="btn btn-primary btn-xlarge">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                        Download LinkRouter.exe
                     </a>
+                    <p class="download-version">Version 1.0 &bull; Single portable executable</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <footer>
+    <!-- Footer -->
+    <footer class="footer">
         <div class="container">
-            <p>
-                <a href="https://github.com/AskerFED/link-router">GitHub</a> &bull;
-                <a href="https://github.com/AskerFED/link-router/releases">Releases</a> &bull;
-                <a href="https://github.com/AskerFED/link-router/issues">Issues</a> &bull;
-                <a href="https://github.com/AskerFED/link-router/blob/main/LICENSE">MIT License</a>
-            </p>
-            <p class="copyright">LinkRouter &copy; 2025 AskerFED</p>
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <svg class="footer-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z"/>
+                        <path d="M2 17L12 22L22 17"/>
+                        <path d="M2 12L12 17L22 12"/>
+                    </svg>
+                    <span>LinkRouter</span>
+                </div>
+                <nav class="footer-links">
+                    <a href="https://github.com/AskerFED/link-router">GitHub</a>
+                    <a href="https://github.com/AskerFED/link-router/releases">Releases</a>
+                    <a href="https://github.com/AskerFED/link-router/issues">Issues</a>
+                    <a href="https://github.com/AskerFED/link-router/blob/main/LICENSE">License</a>
+                    <a href="https://github.com/AskerFED/link-router/blob/main/CONTRIBUTING.md">Contributing</a>
+                </nav>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 AskerFED. Released under the MIT License.</p>
+            </div>
         </div>
     </footer>
+
+    <script>
+        // Mobile nav toggle
+        document.querySelector('.nav-toggle').addEventListener('click', function() {
+            document.querySelector('.nav-links').classList.toggle('active');
+            this.classList.toggle('active');
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Add scroll class to navbar
+        window.addEventListener('scroll', function() {
+            document.querySelector('.navbar').classList.toggle('scrolled', window.scrollY > 50);
+        });
+    </script>
 </body>
 </html>
